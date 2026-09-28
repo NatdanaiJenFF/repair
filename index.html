@@ -382,7 +382,7 @@ img{max-width:100%}
 <script>
 /* ================== ตั้งค่า LIFF (แก้ 2 บรรทัดนี้) ================== */
 const LIFF_ID = '2011772311-Ptw8b18f';                                         // เช่น 2011766740-AbCdEfGh
-const API_URL = 'https://script.google.com/macros/s/AKfycbwsFrGPo-9hZIvaSKnukqOIQZ3uQgvkdhPW5Bq6lfi1BPyRFoVF_XqP1WcxNbsCjIAudg/exec';  // Deploy → Web app URL
+const API_URL = 'https://script.google.com/macros/s/AKfycbwsFrGPo-9hZIvaSKnukqOIQZ3uQgvkdhPW5Bq6lfi1BPyRFoVF_XqP1WcxNbsCjIAudg/exec';   // Deploy → Web app URL
 /* ==================================================================== */
 /* ---------- error screen: never leave a blank page ---------- */
 function showFatal(e){try{console.error(e);const msg=String(e&&(e.stack||e.message)||e).slice(0,600);let el=document.getElementById('fatal');if(!el){el=document.createElement('div');el.id='fatal';document.body.appendChild(el)}
@@ -1050,6 +1050,7 @@ function liffReauth(){let last=0;try{last=+sessionStorage.getItem('mr.reauth')||
  try{sessionStorage.setItem('mr.reauth',String(Date.now()))}catch{}
  try{liff.logout()}catch{}
  if(liff.isInClient())location.reload();else liff.login({redirectUri:location.href})}
+function liffFresh(){const d=liff.getDecodedIDToken();if(d&&d.exp*1000>Date.now()+120000)return true;let n=0;try{n=+sessionStorage.getItem('mr.refresh')||0}catch{}if(Date.now()-n<30000)return true;try{sessionStorage.setItem('mr.refresh',String(Date.now()))}catch{}try{liff.logout()}catch{}if(liff.isInClient())location.reload();else liff.login({redirectUri:location.href});return false}
 function liffToken(){const t=liff.getIDToken(),d=liff.getDecodedIDToken();if(!t||!d||d.exp*1000<Date.now()+60000){liffReauth();throw new Error('NET')}return t}
 async function call(action,p={}){const req={code:S.code,uid:S.uid,token:S.token,...p,action};let res,d;
  try{res=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({liff:1,idToken:liffToken(),req}),redirect:'follow'})}catch(e){throw new Error('NET')}
@@ -1114,6 +1115,7 @@ async function resetPin(){const t=$('#r_who')?.value;const out=$('#r_err');if(!t
 /* ---------- boot ---------- */
 async function boot(){S.login.step='loading';render();
  try{await liff.init({liffId:LIFF_ID});if(!liff.isLoggedIn()){liff.login({redirectUri:location.href});return}
+  if(!liffFresh())return;
   const qv=new URLSearchParams(location.search).get('v');if(qv&&['home','list','new','acct','notif','depts'].includes(qv)){S.view=qv;ls.set('view',qv)}}
  catch(e){S.login={step:'code',mode:'new',err:'เปิดผ่าน LINE ไม่สำเร็จ: '+(e?.message||e)};render();return}
  try{const r=await call('boot');applyData(r);S.aiOn=!!r.ai;S.lineOn=!!r.line;
