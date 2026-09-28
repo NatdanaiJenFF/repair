@@ -352,6 +352,16 @@ img{max-width:100%}
 #fatal .fcard{max-width:520px;width:100%;background:var(--surface);color:var(--ink);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:10px}
 #fatal pre{white-space:pre-wrap;font-size:12px;background:var(--surface-2);padding:10px;border-radius:8px;max-height:200px;overflow:auto;margin:0}
 #fatal button{font:inherit;padding:8px 14px;border-radius:10px;border:1px solid var(--line);background:var(--surface);cursor:pointer}
+
+/* ---------- คำขอรหัส HOSxP / Internet ---------- */
+.hxlist{display:grid;gap:10px}
+.hxkv{display:grid;grid-template-columns:max-content 1fr;gap:6px 14px;margin:12px 0;font-size:14.5px}
+.hxkv dt{color:var(--ink-3)}.hxkv dd{margin:0;word-break:break-word}
+.hxbtns{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.hxlog{display:grid;gap:10px;margin-top:16px;padding-top:12px;border-top:1px solid var(--line);font-size:14px}
+.hxlog small{color:var(--ink-3)}
+.hxpdpa{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;line-height:1.55;margin:12px 0 4px;font-weight:400}
+.hxpdpa input{margin-top:3px;width:18px;height:18px;flex:none}
 </style>
 </head>
 <body>
@@ -372,7 +382,7 @@ img{max-width:100%}
 <script>
 /* ================== ตั้งค่า LIFF (แก้ 2 บรรทัดนี้) ================== */
 const LIFF_ID = '2011772311-Ptw8b18f';                                         // เช่น 2011766740-AbCdEfGh
-const API_URL = 'https://script.google.com/macros/s/AKfycbyuuueaZ-Orku0y4W5fpLxRdhHdA_nUVUTOBYITgx9yNOedmse_vdJ0IBCztkaOgPEJ/exec';   // Deploy → Web app URL
+const API_URL = 'https://script.google.com/macros/s/AKfycbwsFrGPo-9hZIvaSKnukqOIQZ3uQgvkdhPW5Bq6lfi1BPyRFoVF_XqP1WcxNbsCjIAudg/exec';   // Deploy → Web app URL
 /* ==================================================================== */
 /* ---------- error screen: never leave a blank page ---------- */
 function showFatal(e){try{console.error(e);const msg=String(e&&(e.stack||e.message)||e).slice(0,600);let el=document.getElementById('fatal');if(!el){el=document.createElement('div');el.id='fatal';document.body.appendChild(el)}
@@ -381,6 +391,7 @@ function showFatal(e){try{console.error(e);const msg=String(e&&(e.stack||e.messa
 window.addEventListener('error',e=>showFatal(e.error||e.message));
 window.addEventListener('unhandledrejection',e=>{const r=e.reason;if(r&&/ACCESS|AUTH|NET|BUSY|TAKEN/.test(String(r.message||r)))return;showFatal(r)});
 const ICONS={
+ key:'<circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6M15.5 7.5l3 3L22 7l-3-3"/>',
  bolt:'<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>',
  drop:'<path d="M12 2.7s-6 6.6-6 11a6 6 0 0 0 12 0c0-4.4-6-11-6-11z"/>',
  snow:'<path d="M12 2v20M3.3 7l17.4 10M3.3 17 20.7 7M9 4l3 2 3-2M9 20l3-2 3 2"/>',
@@ -450,7 +461,7 @@ const S={uid:ls.get('uid',null),token:ls.get('token',null),code:ls.get('code',''
  view:ls.get('view','home'),openId:null,action:null,sheet:null,lightbox:null,
  draft:null,filter:{q:'',st:'active',dept:'',scope:'all',urg:''},profiles:{},
  bootAt:Date.now(),toasted:new Set(),busy:false,profDraft:null,onboarded:false};
-if(!['home','list','depts','notif','new','report'].includes(S.view))S.view='home';
+if(!['home','list','depts','notif','new','report','acct'].includes(S.view))S.view='home';
 
 const me=()=>S.uid?S.members[S.uid]:null;
 const isStaff=()=>['tech','admin'].includes(me()?.role);
@@ -681,27 +692,27 @@ function profileFields(d){return `<div class="field"><label for="p_name">ชื�
  ${d.role==='tech'||d.role==='admin'?`<div class="field"><label for="p_dept">แผนกช่างที่สังกัด</label><select class="inp" id="p_dept"><option value="">เลือกแผนก</option>${d.role==='admin'?`<option value="all" ${d.dept==='all'?'selected':''}>ทุกแผนก (ศูนย์ซ่อมบำรุง)</option>`:''}${DEPTS.map(x=>`<option value="${x.id}" ${d.dept===x.id?'selected':''}>${esc(x.name)}</option>`).join('')}</select><small style="color:var(--ink-3)">คุณจะได้รับแจ้งเตือนทุกงานที่เข้าแผนกนี้</small></div>`:''}
  ${d.role?`<div class="field"><label for="p_ext">เบอร์โทรภายใน</label><input class="inp num" id="p_ext" maxlength="30" inputmode="tel" placeholder="เช่น 2231" value="${esc(d.ext||'')}"></div>`:''}`}
 /* ---------- render ---------- */
-const NAV=[['home','หน้าหลัก','home'],['list','ใบงาน','list'],['new','แจ้งซ่อม','plus'],['depts','แผนกช่าง','team'],['notif','แจ้งเตือน','bell']];
+const NAV=[['home','หน้าหลัก','home'],['list','ใบงาน','list'],['new','แจ้งซ่อม','plus'],['acct','ขอรหัส','key'],['depts','แผนกช่าง','team'],['notif','แจ้งเตือน','bell']];
 function render(){try{renderInner()}catch(e){showFatal(e)}}
 function renderInner(){if(!S.authed){renderLogin();return}document.querySelector('.app').hidden=false;$('#login').hidden=true;const un=unreadCount();document.title=(un?`(${un}) `:'')+'ศูนย์แจ้งซ่อมโรงพยาบาล';const m=me();
  const brand=`<div class="brand"><span class="mark">${I('cross')}</span><span><b>ศูนย์แจ้งซ่อม</b><small>ระบบแจ้งซ่อมภายในโรงพยาบาล</small></span></div>`;
  const bdg=n=>n?`<span class="badge">${n>99?'99+':n}</span>`:'';
  $('#side').innerHTML=`${brand}<button class="btn pri newbtn" data-act="new">${I('plus','sm')}แจ้งซ่อมใหม่</button>${[...NAV.filter(n=>n[0]!=='new'),...(isStaff()?[['report','รายงาน','chart']]:[])].map(([k,l,i])=>`<button class="navi" data-act="goto" data-go="${k}" ${S.view===k?'aria-current="page"':''}>${I(i)}${l}${k==='notif'?bdg(un):''}</button>`).join('')}
  <button class="me" data-act="profile">${S.uid?av(S.uid):`<span class="av">${I('user','sm')}</span>`}<span><b>${esc(S.uid?nm(S.uid):'ผู้เยี่ยมชม')}</b><small>${m?esc(ROLES[m.role]?.l):'ตั้งค่าโปรไฟล์'}</small></span></button>`;
- $('#tabs').innerHTML=NAV.map(([k,l,i])=>k==='new'?`<button class="tab fab" data-act="new"><span class="fabc">${I(i)}</span><em>${l}</em></button>`:`<button class="tab" data-act="goto" data-go="${k}" ${S.view===k?'aria-current="page"':''}>${I(i)}${l}${k==='notif'?bdg(un):''}</button>`).join('');
- $('#top').innerHTML=`${brand}<span class="grow"></span><button class="iconbtn" data-act="goto" data-go="notif" aria-label="แจ้งเตือน">${I('bell')}${bdg(un)}</button><button class="avbtn" data-act="profile" aria-label="โปรไฟล์">${S.uid?av(S.uid):`<span class="av">${I('user','sm')}</span>`}</button>`;
+ $('#tabs').innerHTML=NAV.filter(n=>n[0]!=='depts').map(([k,l,i])=>k==='new'?`<button class="tab fab" data-act="new"><span class="fabc">${I(i)}</span><em>${l}</em></button>`:`<button class="tab" data-act="goto" data-go="${k}" ${S.view===k?'aria-current="page"':''}>${I(i)}${l}${k==='notif'?bdg(un):''}</button>`).join('');
+ $('#top').innerHTML=`${brand}<span class="grow"></span><button class="iconbtn" data-act="goto" data-go="depts" aria-label="แผนกช่าง">${I('team')}</button><button class="iconbtn" data-act="goto" data-go="notif" aria-label="แจ้งเตือน">${I('bell')}${bdg(un)}</button><button class="avbtn" data-act="profile" aria-label="โปรไฟล์">${S.uid?av(S.uid):`<span class="av">${I('user','sm')}</span>`}</button>`;
  let body='';
  if(S.dbState==='none')body+=`<div class="banner">${I('alert')}<div>ระบบจัดเก็บข้อมูลยังไม่พร้อมในมุมมองนี้ ให้เปิดลิงก์ระบบจากบัญชีที่อยู่ในองค์กรเดียวกันเพื่อแจ้งซ่อมและรับแจ้งเตือน</div></div>`;
  else if(S.dbState==='err')body+=`<div class="banner">${I('alert')}<div>การเชื่อมต่อข้อมูลขัดข้อง โหลดหน้านี้ใหม่อีกครั้ง</div></div>`;
- body+=({home:viewHome,list:viewList,depts:viewDepts,notif:viewNotif,new:viewNew,report:viewReport}[S.view]||viewHome)();
+ body+=({home:viewHome,list:viewList,depts:viewDepts,notif:viewNotif,new:viewNew,report:viewReport,acct:viewAcct}[S.view]||viewHome)();
  patch($('#main'),body);
  const open=!!S.sheet;$('#scrim').hidden=!open;$('#sheet').hidden=!open;document.body.style.overflow=open?'hidden':'';
- if(open)patch($('#sheet'),S.sheet==='ticket'?sheetTicket():sheetProfile());
+ if(open)patch($('#sheet'),S.sheet==='ticket'?sheetTicket():S.sheet==='hx'?sheetHx():sheetProfile());
  $('#lb').innerHTML=S.lightbox?`<div class="lightbox" data-act="unzoom"><img src="${S.lightbox}" alt="รูปขยาย"></div>`:'';
 }
 
 /* ---------- actions ---------- */
-function go(v){S.view=v;ls.set('view',v);if(v==='notif'){S.seenBase=S.lastSeen;markSeen()}render();scrollTo({top:0})}
+function go(v){S.view=v;ls.set('view',v);if(v==='acct'&&S.hx.loaded)loadHx(true);if(v==='notif'){S.seenBase=S.lastSeen;markSeen()}render();scrollTo({top:0})}
 function markSeen(){S.lastSeen=Date.now();ls.set('lastSeen',S.lastSeen)}
 function openTicket(id){S.openId=id;S.sheet='ticket';S.action=null;render();loadPhotos(id)}
 async function loadPhotos(id){const t=S.tickets.find(x=>x.id===id);if(!t||!t.photoCount||S.photoCache[id])return;try{S.photoCache[id]=await call('photos',{id});render()}catch{}}
@@ -753,6 +764,15 @@ document.addEventListener('click',async e=>{const el=e.target.closest('[data-act
  if(el.tagName!=='INPUT'&&el.tagName!=='SELECT')e.preventDefault();
  switch(a){
   case 'goto':{const g=el.dataset.go;if(g.startsWith('list:')){const x=g.slice(5);S.filter={...S.filter,st:x==='mine'?'active':x,scope:x==='mine'?'mine':(isStaff()?'dept':'all'),dept:''};go('list')}else if(g.startsWith('dept:')){S.filter={q:'',st:'active',dept:g.slice(5),scope:'all',urg:''};go('list')}else go(g);break}
+  case 'hxnew':S.hx.form=!S.hx.form;S.hx.err='';render();break;
+  case 'hxtab':S.hx.tab=el.dataset.t;render();break;
+  case 'hxreload':loadHx(true);break;
+  case 'hxtype':hxDraft().type=el.dataset.v;render();break;
+  case 'hxsys':{const d=hxDraft(),k=el.dataset.v;d.systems=d.systems.includes(k)?d.systems.filter(x=>x!==k):[...d.systems,k];render();break}
+  case 'hxsubmit':hxSubmit();break;
+  case 'hxopen':S.hx.open=el.dataset.id;S.hx.act=null;S.sheet='hx';render();break;
+  case 'hxact':S.hx.act=el.dataset.a||null;render();break;
+  case 'hxdo':hxDo(el.dataset.a);break;
   case 'new':S.draft=newDraft(el.dataset.dept);go('new');break;
   case 'dpick':S.draft.dept=el.dataset.dept;render();break;
   case 'upick':S.draft.urgency=el.dataset.u;render();break;
@@ -934,6 +954,95 @@ async function lineLink(){S.busy=true;render();try{S.lineLink=await call('lineLi
 function lineLinkedCheck(){if(S.lineLink&&me()?.line){S.lineLink=null;toast('เชื่อม LINE เรียบร้อย','จะแจ้งความคืบหน้าผ่าน LINE ทุกขั้นตอน',null,'check');render()}}
 async function lineUnlink(){try{const r=await call('lineUnlink');S.members=r.members;toast('ยกเลิกการเชื่อม LINE แล้ว','',null,'check');render()}catch(e){toast('ทำรายการไม่สำเร็จ','ลองใหม่อีกครั้ง',null,'alert')}}
 
+
+/* ---------- ขอรหัส HOSxP / Internet ---------- */
+const HX_TYPE={new:'ขอรหัสใหม่',reset:'รีเซ็ตรหัสผ่าน',disable:'ยกเลิกรหัส'};
+const HX_SYS={hosxp:'HOSxP',net:'Internet'};
+const HX_ST={pending:{l:'รอดำเนินการ',t:'warn'},working:{l:'กำลังดำเนินการ',t:'info'},done:{l:'เสร็จแล้ว',t:'ok'},rejected:{l:'ไม่อนุมัติ',t:'crit'},cancelled:{l:'ยกเลิก',t:'mute'}};
+const HX_EV={create:'ยื่นคำขอ',take:'งาน IT รับเรื่อง',done:'ดำเนินการเสร็จ',reject:'ไม่อนุมัติ',cancel:'ยกเลิกคำขอ',comment:'ข้อความ'};
+S.hx={items:[],loaded:false,loading:false,mgr:false,tab:'mine',form:false,draft:null,open:null,act:null,busy:false,err:''};
+const hxPill=s=>`<span class="pill t-${HX_ST[s]?.t||'mute'}">${esc(HX_ST[s]?.l||s)}</span>`;
+const hxSys=x=>(x.systems||[]).map(s=>HX_SYS[s]||s).join(' + ');
+function hxDraft(){return S.hx.draft||(S.hx.draft={type:'new',systems:['hosxp','net']})}
+function cidOk(c){if(!/^\d{13}$/.test(c))return false;let s=0;for(let i=0;i<12;i++)s+=+c[i]*(13-i);return (11-s%11)%10===+c[12]}
+function hxErr(e){const c=String(e?.message||e);return c.includes('BAD_CID')?'เลขบัตรประชาชนไม่ถูกต้อง':c.includes('NO_PDPA')?'กรุณายินยอมการใช้ข้อมูล (PDPA)':c.includes('BAD_USERNAME')?'Username ใช้ได้เฉพาะภาษาอังกฤษ ตัวเลข และ . _ -':c.includes('MISSING')?'กรุณากรอกข้อมูลให้ครบ':c.includes('HX_SYS')?'กรุณาเลือกระบบ':c.includes('CLOSED')?'คำขอนี้ดำเนินการไปแล้ว':c.includes('NOT_IT')?'เฉพาะงาน IT':c.includes('EMPTY')?'กรุณาพิมพ์ข้อความ':errMsg(e)[0]}
+async function loadHx(force){if(S.hx.loading||(S.hx.loaded&&!force))return;S.hx.loading=true;
+ try{const r=await call('hxList');S.hx.items=(r.items||[]).sort((a,b)=>b.createdAt-a.createdAt);S.hx.mgr=!!r.mgr;if(!S.hx.loaded&&S.hx.mgr&&S.hx.items.some(x=>['pending','working'].includes(x.status)))S.hx.tab='pending';S.hx.loaded=true}
+ catch(e){if(String(e?.message||e).includes('AUTH')){forceRelogin('เซสชันหมดอายุ กรุณาใส่ PIN อีกครั้ง');return}S.hx.loaded=true;toast('โหลดคำขอรหัสไม่สำเร็จ','ลองกดรีเฟรชอีกครั้ง',null,'alert')}
+ finally{S.hx.loading=false;render()}}
+function hxUpsert(it){const i=S.hx.items.findIndex(x=>x.id===it.id);if(i>=0)S.hx.items[i]=it;else S.hx.items.unshift(it)}
+function hxCard(x){return `<article class="tcard" data-act="hxopen" data-id="${esc(x.id)}" tabindex="0">
+ <div class="tc-top"><span class="code mono">${esc(x.code)}</span><span class="tag">${esc(HX_TYPE[x.type]||x.type)}</span><span class="grow"></span>${hxPill(x.status)}</div>
+ <div class="tc-title">${esc(x.name)} · ${esc(x.position)}</div>
+ <div class="tc-meta"><span>${I('key','sm')}${esc(hxSys(x))}</span><span>${esc(x.unit)}</span><span>${esc(rel(x.createdAt))}</span>${S.hx.mgr&&x.createdBy!==S.uid?`<span>${av(x.createdBy,'sm')}${esc(nm(x.createdBy))}</span>`:''}</div></article>`}
+function viewAcct(){if(!S.hx.loaded){loadHx();return skeleton()}
+ const mgr=S.hx.mgr,t=S.hx.tab,pend=S.hx.items.filter(x=>['pending','working'].includes(x.status));
+ const list=t==='pending'&&mgr?pend:t==='all'&&mgr?S.hx.items:S.hx.items.filter(x=>x.createdBy===S.uid);
+ let h=`<div class="hello" style="justify-content:space-between;gap:12px;flex-wrap:wrap"><div><h1>ขอรหัส HOSxP / Internet</h1><p>ขอรหัสใหม่ รีเซ็ตรหัสผ่าน หรือยกเลิกรหัส งาน IT จะได้รับแจ้งทาง LINE ทันที</p></div>
+ <button class="btn ${S.hx.form?'':'pri'}" data-act="hxnew">${I(S.hx.form?'x':'plus','sm')}${S.hx.form?'ปิดฟอร์ม':'ยื่นคำขอใหม่'}</button></div>`;
+ if(S.hx.form)h+=hxForm();
+ h+=`<div class="chips" style="margin:16px 0 12px">${[['mine','คำขอของฉัน'],...(mgr?[['pending',`รอดำเนินการ (${pend.length})`],['all','ทั้งหมด']]:[])].map(([k,l])=>`<button class="chip" aria-pressed="${(mgr?t:'mine')===k}" data-act="hxtab" data-t="${k}">${l}</button>`).join('')}<button class="chip" data-act="hxreload" ${S.hx.loading?'disabled':''}>${I('undo','sm')}${S.hx.loading?'กำลังโหลด...':'รีเฟรช'}</button></div>`;
+ h+=list.length?`<div class="hxlist">${list.map(hxCard).join('')}</div>`:`<div class="empty">${t==='mine'||!mgr?'ยังไม่มีคำขอ กด “ยื่นคำขอใหม่” เพื่อเริ่ม':'ไม่มีคำขอค้าง'}</div>`;
+ return h}
+function hxForm(){const d=hxDraft(),m=me()||{},isNew=d.type==='new',bz=S.hx.busy?'disabled':'';
+ return `<div class="card form" style="margin-top:12px">
+ <div class="field"><span class="lbl">1. ประเภทคำขอ</span><div class="chips">${Object.entries(HX_TYPE).map(([k,l])=>`<button type="button" class="chip" aria-pressed="${d.type===k}" data-act="hxtype" data-v="${k}">${l}</button>`).join('')}</div></div>
+ <div class="field"><span class="lbl">2. ระบบ <small>(เลือกได้มากกว่า 1)</small></span><div class="chips">${Object.entries(HX_SYS).map(([k,l])=>`<button type="button" class="chip" aria-pressed="${d.systems.includes(k)}" data-act="hxsys" data-v="${k}">${l}</button>`).join('')}</div></div>
+ <div class="row2"><div class="field"><label for="hx_name">3. ชื่อ-สกุล ผู้ใช้รหัส <small>(ภาษาไทย)</small></label><input class="inp" id="hx_name" maxlength="100" value="${esc(m.name||'')}"></div>
+ <div class="field"><label for="hx_pos">ตำแหน่ง</label><input class="inp" id="hx_pos" maxlength="100" placeholder="เช่น พยาบาลวิชาชีพ"></div></div>
+ <div class="row2"><div class="field"><label for="hx_unit">หน่วยงาน</label><select class="inp" id="hx_unit"><option value="">เลือกหน่วยงาน</option>${UNITS.map(u=>`<option ${m.unit===u?'selected':''}>${esc(u)}</option>`).join('')}</select></div>
+ <div class="field"><label for="hx_phone">เบอร์ติดต่อ</label><input class="inp num" id="hx_phone" maxlength="30" inputmode="tel" value="${esc(m.ext||'')}"></div></div>
+ <div class="row2"><div class="field"><label for="hx_cid">เลขบัตรประชาชน ${isNew?'':'<small>(ไม่บังคับ)</small>'}</label><input class="inp num" id="hx_cid" maxlength="13" inputmode="numeric" autocomplete="off" placeholder="13 หลัก"></div>
+ <div class="field"><label for="hx_lic">เลขใบประกอบวิชาชีพ <small>(ถ้ามี เช่น ว.12345)</small></label><input class="inp" id="hx_lic" maxlength="30"></div></div>
+ ${isNew?`<div class="row2">${d.systems.includes('hosxp')?`<div class="field"><label for="hx_uh">Username HOSxP ที่ต้องการ <small>(ภาษาอังกฤษ)</small></label><input class="inp mono" id="hx_uh" maxlength="40" autocapitalize="off" autocomplete="off"></div>`:''}${d.systems.includes('net')?`<div class="field"><label for="hx_un">Username Internet ที่ต้องการ <small>(ตัวพิมพ์เล็ก)</small></label><input class="inp mono" id="hx_un" maxlength="40" autocapitalize="off" autocomplete="off"></div>`:''}</div>`:''}
+ <div class="field"><label for="hx_reason">เหตุผล / รายละเอียด <small>(ไม่บังคับ)</small></label><textarea class="inp" id="hx_reason" maxlength="500" placeholder="เช่น บุคลากรใหม่ เริ่มงาน 1 ต.ค.">${''}</textarea></div>
+ <div class="banner">${I('alert')}<div><b>ไม่ต้องกรอกรหัสผ่าน</b> งาน IT จะตั้งรหัสผ่านเริ่มต้นให้ และแจ้งให้มารับด้วยตนเอง กรุณาเปลี่ยนรหัสผ่านเมื่อเข้าใช้ครั้งแรก</div></div>
+ <label class="hxpdpa"><input type="checkbox" id="hx_pdpa"><span>ข้าพเจ้ายินยอมให้งาน IT เก็บและใช้ข้อมูลข้างต้น เพื่อสร้างและบริหารบัญชีผู้ใช้งานของโรงพยาบาลเท่านั้น (PDPA)</span></label>
+ ${S.hx.err?`<p class="lerr">${esc(S.hx.err)}</p>`:''}
+ <button type="button" class="btn pri block" data-act="hxsubmit" ${bz}>${S.hx.busy?'กำลังส่ง...':'ส่งคำขอ'}</button></div>`}
+async function hxSubmit(){const d=hxDraft(),v=id=>($('#'+id)?.value||'').trim(),cid=v('hx_cid').replace(/\D/g,'');
+ const hx={type:d.type,systems:d.systems,name:v('hx_name'),position:v('hx_pos'),unit:v('hx_unit'),phone:v('hx_phone'),cid,license:v('hx_lic'),wantHosxp:v('hx_uh'),wantNet:v('hx_un'),reason:v('hx_reason'),pdpa:!!$('#hx_pdpa')?.checked};
+ const fail=m=>{S.hx.err=m;render()},un=/^[A-Za-z0-9._-]*$/;
+ if(!hx.systems.length)return fail('กรุณาเลือกระบบอย่างน้อย 1 ระบบ');
+ if(!hx.name||!hx.position||!hx.unit)return fail('กรุณากรอกชื่อ-สกุล ตำแหน่ง และหน่วยงาน');
+ if((d.type==='new'||cid)&&!cidOk(cid))return fail('เลขบัตรประชาชนไม่ถูกต้อง');
+ if(!un.test(hx.wantHosxp)||!un.test(hx.wantNet))return fail('Username ใช้ได้เฉพาะภาษาอังกฤษ ตัวเลข และ . _ -');
+ if(!hx.pdpa)return fail('กรุณาติ๊กยินยอมการใช้ข้อมูล (PDPA)');
+ S.hx.busy=true;S.hx.err='';render();
+ try{const r=await call('hxCreate',{hx});hxUpsert(r.item);S.hx.form=false;S.hx.draft=null;S.hx.tab='mine';toast(`ส่งคำขอ ${esc(r.item.code)} แล้ว`,'งาน IT ได้รับแจ้งเตือนแล้ว',null,'check')}
+ catch(e){if(String(e?.message||e).includes('AUTH')){forceRelogin('เซสชันหมดอายุ กรุณาใส่ PIN อีกครั้ง');return}S.hx.err=hxErr(e)}
+ finally{S.hx.busy=false;render()}}
+function sheetHx(){const x=S.hx.items.find(i=>i.id===S.hx.open);
+ if(!x)return `<div class="shead"><h2>ไม่พบคำขอ</h2><span class="grow"></span><button class="iconbtn" data-act="close" aria-label="ปิด">${I('x')}</button></div>`;
+ const mgr=S.hx.mgr,mine=x.createdBy===S.uid,open=['pending','working'].includes(x.status),bz=S.hx.busy?'disabled':'',A=S.hx.act,r=x.result||{};
+ const row=(k,v)=>v?`<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`:'';
+ let h=`<div class="shead"><span class="mono" style="color:var(--ink-3)">${esc(x.code)}</span>${hxPill(x.status)}<span class="grow"></span><button class="iconbtn" data-act="close" aria-label="ปิด">${I('x')}</button></div><div class="sbody">
+ <h2 style="margin:0">${esc(HX_TYPE[x.type]||'')} · ${esc(hxSys(x))}</h2>
+ <dl class="hxkv">${row('ชื่อ-สกุล',x.name)}${row('ตำแหน่ง',x.position)}${row('หน่วยงาน',x.unit)}${row('เบอร์ติดต่อ',x.phone)}${row('เลขบัตรประชาชน',x.cid)}${row('ใบประกอบวิชาชีพ',x.license)}${row('Username HOSxP ที่ขอ',x.wantHosxp)}${row('Username Internet ที่ขอ',x.wantNet)}${row('เหตุผล',x.reason)}${row('ผู้ยื่น',nm(x.createdBy))}${row('ยื่นเมื่อ',full(x.createdAt))}${row('ผู้ดำเนินการ',x.handler?nm(x.handler):'')}${row('Username HOSxP ที่สร้าง',r.hosxp)}${row('Username Internet ที่สร้าง',r.net)}</dl>`;
+ if(x.status==='done'&&x.type!=='disable')h+=`<div class="banner">${I('alert')}<div>รับรหัสผ่านเริ่มต้นได้ที่งาน IT ด้วยตนเอง และเปลี่ยนรหัสผ่านเมื่อเข้าใช้ครั้งแรก</div></div>`;
+ if(mgr&&open){
+  if(A==='done')h+=`<div class="card form"><b>บันทึกผลการดำเนินการ</b>
+   ${x.systems.includes('hosxp')?`<div class="field"><label for="hx_rh">Username HOSxP</label><input class="inp mono" id="hx_rh" maxlength="40" autocapitalize="off" value="${esc(x.wantHosxp||'')}"></div>`:''}
+   ${x.systems.includes('net')?`<div class="field"><label for="hx_rn">Username Internet</label><input class="inp mono" id="hx_rn" maxlength="40" autocapitalize="off" value="${esc(x.wantNet||'')}"></div>`:''}
+   <div class="field"><label for="hx_note">ข้อความถึงผู้ขอ <small>(ไม่บังคับ)</small></label><textarea class="inp" id="hx_note" maxlength="500" placeholder="เช่น รับรหัสผ่านได้ที่ห้อง IT ชั้น 2 ในเวลาราชการ"></textarea></div>
+   <p class="lmuted" style="font-size:12.5px;margin:0">⚠️ ห้ามพิมพ์รหัสผ่านในช่องนี้ ข้อความจะถูกส่งทาง LINE</p>
+   <div class="hxbtns"><button class="btn" data-act="hxact" data-a="">ย้อนกลับ</button><button class="btn pri" data-act="hxdo" data-a="done" ${bz}>${I('check','sm')}บันทึกและแจ้งผู้ขอ</button></div></div>`;
+  else if(A==='reject')h+=`<div class="card form"><div class="field"><label for="hx_note">เหตุผลที่ไม่อนุมัติ</label><textarea class="inp" id="hx_note" maxlength="500"></textarea></div>
+   <div class="hxbtns"><button class="btn" data-act="hxact" data-a="">ย้อนกลับ</button><button class="btn pri" data-act="hxdo" data-a="reject" ${bz}>ยืนยันไม่อนุมัติ</button></div></div>`;
+  else h+=`<div class="hxbtns">${x.status==='pending'?`<button class="btn" data-act="hxdo" data-a="take" ${bz}>${I('wrench','sm')}รับเรื่อง</button>`:''}<button class="btn pri" data-act="hxact" data-a="done">${I('check','sm')}ดำเนินการเสร็จ</button><button class="btn" data-act="hxact" data-a="reject">${I('x','sm')}ไม่อนุมัติ</button></div>`}
+ if(open&&(mine||mgr)&&A!=='done'&&A!=='reject')h+=`<div class="field" style="margin-top:8px"><label for="hx_note">ส่งข้อความ</label><textarea class="inp" id="hx_note" maxlength="500" placeholder="${mgr&&!mine?'ข้อความถึงผู้ขอ (ส่งทาง LINE)':'ข้อความถึงงาน IT'}"></textarea></div>
+  <div class="hxbtns"><button class="btn" data-act="hxdo" data-a="comment" ${bz}>${I('send','sm')}ส่งข้อความ</button>${mine&&x.status==='pending'?`<button class="btn" data-act="hxdo" data-a="cancel" ${bz}>${I('x','sm')}ยกเลิกคำขอ</button>`:''}</div>`;
+ h+=`<div class="hxlog">${(x.log||[]).slice().reverse().map(e=>`<div><b>${esc(HX_EV[e.kind]||e.kind)}</b> · ${esc(nm(e.by))} <small>· ${esc(full(e.t))}</small>${e.text?`<div>${esc(e.text)}</div>`:''}</div>`).join('')}</div></div>`;
+ return h}
+async function hxDo(op){const x=S.hx.items.find(i=>i.id===S.hx.open);if(!x)return;const v=id=>($('#'+id)?.value||'').trim();
+ const p={id:x.id,op,note:v('hx_note')};if(op==='done')p.result={hosxp:v('hx_rh'),net:v('hx_rn')};
+ if((op==='reject'||op==='comment')&&!p.note)return toast('กรุณาพิมพ์ข้อความ','',null,'alert');
+ if(op==='done'&&x.type==='new'&&((x.systems.includes('hosxp')&&!p.result.hosxp)||(x.systems.includes('net')&&!p.result.net)))return toast('กรุณาใส่ Username ที่สร้างให้ครบ','',null,'alert');
+ S.hx.busy=true;render();
+ try{const r=await call('hxMutate',p);hxUpsert(r.item);S.hx.act=null;const n=$('#hx_note');if(n)n.value='';toast('บันทึกแล้ว',x.code,null,'check')}
+ catch(e){if(String(e?.message||e).includes('AUTH')){forceRelogin('เซสชันหมดอายุ กรุณาใส่ PIN อีกครั้ง');return}toast(hxErr(e),x.code,null,'alert');if(String(e?.message||e).includes('CLOSED'))loadHx(true)}
+ finally{S.hx.busy=false;render()}}
+
 /* ---------- server link (Google Apps Script) ---------- */
 /* เรียก Apps Script ผ่าน LIFF: ส่ง LINE ID token ไปยืนยันตัวตนทุกครั้ง */
 function liffReauth(){let last=0;try{last=+sessionStorage.getItem('mr.reauth')||0}catch{}
@@ -1004,7 +1113,8 @@ async function resetPin(){const t=$('#r_who')?.value;const out=$('#r_err');if(!t
 
 /* ---------- boot ---------- */
 async function boot(){S.login.step='loading';render();
- try{await liff.init({liffId:LIFF_ID});if(!liff.isLoggedIn()){liff.login({redirectUri:location.href});return}}
+ try{await liff.init({liffId:LIFF_ID});if(!liff.isLoggedIn()){liff.login({redirectUri:location.href});return}
+  const qv=new URLSearchParams(location.search).get('v');if(qv&&['home','list','new','acct','notif','depts'].includes(qv)){S.view=qv;ls.set('view',qv)}}
  catch(e){S.login={step:'code',mode:'new',err:'เปิดผ่าน LINE ไม่สำเร็จ: '+(e?.message||e)};render();return}
  try{const r=await call('boot');applyData(r);S.aiOn=!!r.ai;S.lineOn=!!r.line;
   if(r.liffUid){S.liffLinked=true;setSession(r.liffUid,null);enter()}
