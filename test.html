@@ -43,7 +43,9 @@ function add(state, title, detail, hint) {
   add('ok', '2. liff.init สำเร็จ', `เปิดในแอป LINE: ${liff.isInClient()} | ล็อกอินแล้ว: ${liff.isLoggedIn()} | OS: ${liff.getOS()}`);
   if (!liff.isLoggedIn()) { add('info', 'กำลังพาไปล็อกอิน LINE...'); liff.login({ redirectUri: location.href }); return; }
 
-  // 3) ID token
+  // 3) ID token (ถ้าหมดอายุ ขอใหม่อัตโนมัติ 1 ครั้ง)
+  function liffFresh(){const d=liff.getDecodedIDToken();if(d&&d.exp*1000>Date.now()+120000)return true;let n=0;try{n=+sessionStorage.getItem('mr.refresh')||0}catch{}if(Date.now()-n<30000)return true;try{sessionStorage.setItem('mr.refresh',String(Date.now()))}catch{}try{liff.logout()}catch{}if(liff.isInClient())location.reload();else liff.login({redirectUri:location.href});return false}
+  if (!liffFresh()) { add('info', 'token หมดอายุ กำลังขอ token ใหม่...'); return; }
   const tok = liff.getIDToken(), dec = liff.getDecodedIDToken();
   if (!tok || !dec) {
     add('bad', '3. ไม่มี ID token', '', 'ไปที่ LINE Developers → LINE Login channel → แท็บ LIFF → แก้ LIFF app → Scopes ติ๊ก "openid" แล้วบันทึก จากนั้นปิดหน้านี้แล้วเปิดใหม่');
