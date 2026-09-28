@@ -1045,15 +1045,16 @@ async function hxDo(op){const x=S.hx.items.find(i=>i.id===S.hx.open);if(!x)retur
 
 /* ---------- server link (Google Apps Script) ---------- */
 /* เรียก Apps Script ผ่าน LIFF: ส่ง LINE ID token ไปยืนยันตัวตนทุกครั้ง */
-function liffReauth(){let last=0;try{last=+sessionStorage.getItem('mr.reauth')||0}catch{}
- if(Date.now()-last<60000){showFatal('เซสชัน LINE หมดอายุ กรุณาปิดหน้านี้แล้วเปิดใหม่จากเมนู LINE');return}
+function liffReauth(){
+ if(liff.isInClient()){showFatal('เซสชัน LINE หมดอายุ กรุณาปิดหน้านี้ (กด X มุมขวาบน) แล้วกดเมนูในแชต LINE อีกครั้ง');return}
+ let last=0;try{last=+sessionStorage.getItem('mr.reauth')||0}catch{}
+ if(Date.now()-last<60000){showFatal('เข้าสู่ระบบ LINE ไม่สำเร็จ กรุณาปิดเบราว์เซอร์แล้วเปิดใหม่');return}
  try{sessionStorage.setItem('mr.reauth',String(Date.now()))}catch{}
  try{liff.logout()}catch{}
- if(liff.isInClient())location.reload();else liff.login({redirectUri:location.href})}
-function liffFresh(){const d=liff.getDecodedIDToken();if(d&&d.exp*1000>Date.now()+120000)return true;let n=0;try{n=+sessionStorage.getItem('mr.refresh')||0}catch{}if(Date.now()-n<30000)return true;try{sessionStorage.setItem('mr.refresh',String(Date.now()))}catch{}try{liff.logout()}catch{}if(liff.isInClient())location.reload();else liff.login({redirectUri:location.href});return false}
-function liffToken(){const t=liff.getIDToken(),d=liff.getDecodedIDToken();if(!t||!d||d.exp*1000<Date.now()+60000){liffReauth();throw new Error('NET')}return t}
+ liff.login({redirectUri:location.href})}
+function liffToken(){const t=liff.getAccessToken();if(!t){liffReauth();throw new Error('NET')}return t}
 async function call(action,p={}){const req={code:S.code,uid:S.uid,token:S.token,...p,action};let res,d;
- try{res=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({liff:1,idToken:liffToken(),req}),redirect:'follow'})}catch(e){throw new Error('NET')}
+ try{res=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({liff:1,accessToken:liffToken(),req}),redirect:'follow'})}catch(e){throw new Error('NET')}
  try{d=await res.json()}catch(e){throw new Error('NET')}
  if(!d.ok){const m=String(d.error||'NET');if(m.includes('LIFF_AUTH'))liffReauth();if(m.includes('LIFF_OFF'))showFatal('ยังไม่ได้ใส่ LIFF_ID ในแท็บ "ตั้งค่า" ของ Google Sheet');throw new Error(m)}
  return d.data}
@@ -1115,7 +1116,6 @@ async function resetPin(){const t=$('#r_who')?.value;const out=$('#r_err');if(!t
 /* ---------- boot ---------- */
 async function boot(){S.login.step='loading';render();
  try{await liff.init({liffId:LIFF_ID});if(!liff.isLoggedIn()){liff.login({redirectUri:location.href});return}
-  if(!liffFresh())return;
   const qv=new URLSearchParams(location.search).get('v');if(qv&&['home','list','new','acct','notif','depts'].includes(qv)){S.view=qv;ls.set('view',qv)}}
  catch(e){S.login={step:'code',mode:'new',err:'เปิดผ่าน LINE ไม่สำเร็จ: '+(e?.message||e)};render();return}
  try{const r=await call('boot');applyData(r);S.aiOn=!!r.ai;S.lineOn=!!r.line;
