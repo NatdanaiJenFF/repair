@@ -43,19 +43,11 @@ function add(state, title, detail, hint) {
   add('ok', '2. liff.init สำเร็จ', `เปิดในแอป LINE: ${liff.isInClient()} | ล็อกอินแล้ว: ${liff.isLoggedIn()} | OS: ${liff.getOS()}`);
   if (!liff.isLoggedIn()) { add('info', 'กำลังพาไปล็อกอิน LINE...'); liff.login({ redirectUri: location.href }); return; }
 
-  // 3) ID token (ถ้าหมดอายุ ขอใหม่อัตโนมัติ 1 ครั้ง)
-  function liffFresh(){const d=liff.getDecodedIDToken();if(d&&d.exp*1000>Date.now()+120000)return true;let n=0;try{n=+sessionStorage.getItem('mr.refresh')||0}catch{}if(Date.now()-n<30000)return true;try{sessionStorage.setItem('mr.refresh',String(Date.now()))}catch{}try{liff.logout()}catch{}if(liff.isInClient())location.reload();else liff.login({redirectUri:location.href});return false}
-  if (!liffFresh()) { add('info', 'token หมดอายุ กำลังขอ token ใหม่...'); return; }
-  const tok = liff.getIDToken(), dec = liff.getDecodedIDToken();
-  if (!tok || !dec) {
-    add('bad', '3. ไม่มี ID token', '', 'ไปที่ LINE Developers → LINE Login channel → แท็บ LIFF → แก้ LIFF app → Scopes ติ๊ก "openid" แล้วบันทึก จากนั้นปิดหน้านี้แล้วเปิดใหม่');
-    return;
-  }
-  const minsLeft = Math.round((dec.exp * 1000 - Date.now()) / 60000);
-  const aud = String(dec.aud), want = LIFF_ID.split('-')[0];
-  add(aud === want && minsLeft > 0 ? 'ok' : 'bad', '3. มี ID token',
-    `channel ใน token (aud): ${aud}\nchannel ที่ควรเป็น: ${want}\nLINE userId: ${String(dec.sub).slice(0, 6)}...\nหมดอายุในอีก: ${minsLeft} นาที`,
-    aud !== want ? 'LIFF ID ไม่ตรงกับ channel ของ token' : minsLeft <= 0 ? 'token หมดอายุ ปิดหน้านี้แล้วเปิดใหม่จากแอป LINE' : '');
+  // 3) Access token (ใช้ยืนยันตัวตนกับ Apps Script)
+  const at = liff.getAccessToken();
+  if (!at) { add('bad', '3. ไม่มี Access token', '', liff.isInClient() ? 'ปิดหน้านี้แล้วเปิดใหม่จากแชต LINE' : 'ปิดเบราว์เซอร์แล้วเปิดใหม่'); return; }
+  let prof = null; try { prof = await liff.getProfile(); } catch (e) {}
+  add('ok', '3. มี Access token', prof ? `ชื่อ LINE: ${prof.displayName}\nLINE userId: ${String(prof.userId).slice(0, 6)}...` : 'อ่านโปรไฟล์ไม่ได้ (ไม่เป็นไร)');
 
   // 4) เรียก Apps Script
   let res, text;
@@ -63,7 +55,7 @@ function add(state, title, detail, hint) {
     res = await fetch(API_URL, {
       method: 'POST', redirect: 'follow',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({ liff: 1, idToken: tok, req: { action: 'boot' } })
+      body: JSON.stringify({ liff: 1, accessToken: at, req: { action: 'boot' } })
     });
     text = await res.text();
   } catch (e) {
@@ -90,7 +82,7 @@ function add(state, title, detail, hint) {
   } else if (err.includes('LIFF_OFF')) {
     add('bad', '5. Apps Script ยังไม่มี LIFF_ID', err, 'ใส่ 2011772311-Ptw8b18f ในแถว LIFF_ID คอลัมน์ B แท็บ "ตั้งค่า" ของ Sheet ระบบแจ้งซ่อม');
   } else if (err.includes('LIFF_AUTH')) {
-    add('bad', '5. LINE ปฏิเสธ token', err, 'LIFF_ID ในแท็บ "ตั้งค่า" ต้องเป็น 2011772311-Ptw8b18f ตรงทุกตัว (ห้ามมีเว้นวรรค) และมีแถว LIFF_ID แถวเดียว');
+    add('bad', '5. LINE ปฏิเสธ token', err, 'ตรวจ LIFF_ID ในแท็บ "ตั้งค่า" = 2011772311-Ptw8b18f และ Deploy เวอร์ชันใหม่แล้ว | ถ้ายังไม่ได้ ปิดหน้านี้แล้วเปิดใหม่จากแชต LINE');
   } else {
     add('bad', '5. Apps Script แจ้ง error', err, 'ส่งภาพหน้าจอนี้ให้ผู้ดูแลระบบ');
   }
