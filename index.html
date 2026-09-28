@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<base target="_top">
+<meta charset="utf-8">
+<script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anuphan:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+:root{
+  --bg:#EEF3F4; --surface:#FFFFFF; --surface-2:#E6EDEF; --line:#D3DEE1;
+  --ink:#0E2230; --ink-2:#465A66; --ink-3:#798B94;
+  --brand:#0B7A83; --brand-ink:#FFFFFF; --brand-soft:#D9EFF0; --brand-deep:#08565C;
+  --crit:#C93B30; --crit-soft:#FBE5E2; --warn:#B8760A; --warn-soft:#FBEFD6;
+  --ok:#1F7F53; --ok-soft:#DCF1E6; --info:#2A67AD; --info-soft:#E0EBF7;
+  --violet:#6450BF; --violet-soft:#EAE6F9; --mute:#6B7C85; --mute-soft:#E7ECEE;
+  --shadow:0 1px 2px rgba(14,34,48,.06),0 8px 24px rgba(14,34,48,.06);
+  --r:14px; --ff-d:"Anuphan","IBM Plex Sans Thai",system-ui,sans-serif;
+  --ff:"IBM Plex Sans Thai",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --ff-m:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  color-scheme:dark;
+  --bg:#0A151B; --surface:#112029; --surface-2:#172B35; --line:#233E4A;
+  --ink:#E4EDF0; --ink-2:#A3B5BD; --ink-3:#6F8590;
+  --brand:#3DB5BD; --brand-ink:#04252A; --brand-soft:#11363B; --brand-deep:#7FD3D8;
+  --crit:#FF7B6F; --crit-soft:#3A1D1A; --warn:#F0B34A; --warn-soft:#37290F;
+  --ok:#4DC68A; --ok-soft:#123224; --info:#72A9EE; --info-soft:#152A43;
+  --violet:#A797F0; --violet-soft:#241F45; --mute:#8FA2AB; --mute-soft:#1C2D36;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25);
+}}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0A151B; --surface:#112029; --surface-2:#172B35; --line:#233E4A;
+  --ink:#E4EDF0; --ink-2:#A3B5BD; --ink-3:#6F8590;
+  --brand:#3DB5BD; --brand-ink:#04252A; --brand-soft:#11363B; --brand-deep:#7FD3D8;
+  --crit:#FF7B6F; --crit-soft:#3A1D1A; --warn:#F0B34A; --warn-soft:#37290F;
+  --ok:#4DC68A; --ok-soft:#123224; --info:#72A9EE; --info-soft:#152A43;
+  --violet:#A797F0; --violet-soft:#241F45; --mute:#8FA2AB; --mute-soft:#1C2D36;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--ff);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.ic{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.ic.sm{width:16px;height:16px}.ic.lg{width:26px;height:26px}
+h1,h2,h3{font-family:var(--ff-d);text-wrap:balance;margin:0;line-height:1.3}
+.mono{font-family:var(--ff-m);font-size:.82em;letter-spacing:.02em}
+.num{font-variant-numeric:tabular-nums}
+
+/* shell */
+.app{display:flex;min-height:100%}
+.side{display:none}
+.mainwrap{flex:1;min-width:0;display:flex;flex-direction:column}
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid transparent}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.mark{width:36px;height:36px;border-radius:11px;background:var(--brand);color:var(--brand-ink);display:grid;place-items:center;flex:none}
+.brand b{font-family:var(--ff-d);font-size:17px;display:block;line-height:1.1}
+.brand small{color:var(--ink-3);font-size:12px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.grow{flex:1}
+.iconbtn{position:relative;width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;color:var(--ink-2)}
+.iconbtn:hover{color:var(--ink)}
+.badge{position:absolute;top:-5px;right:-5px;min-width:19px;height:19px;padding:0 5px;border-radius:99px;background:var(--crit);color:#fff;font-size:11px;font-weight:600;display:grid;place-items:center;border:2px solid var(--bg)}
+.av{width:32px;height:32px;border-radius:50%;flex:none;object-fit:cover;background:var(--surface-2);display:grid;place-items:center;font-size:12px;font-weight:600;color:var(--ink-2);overflow:hidden}
+.av.sm{width:24px;height:24px;font-size:10px}
+.avbtn{border:0;background:none;padding:0;border-radius:50%}
+main{padding:8px 16px 110px;width:100%;max-width:1120px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--surface);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px))}
+.tab{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;color:var(--ink-3);padding:6px 0;border-radius:10px;position:relative}
+.tab[aria-current="page"]{color:var(--brand)}
+.tab .badge{top:0;right:calc(50% - 22px)}
+.tab.fab{color:var(--brand-ink)}
+.tab.fab span.fabc{width:50px;height:50px;border-radius:16px;background:var(--brand);display:grid;place-items:center;margin-top:-22px;box-shadow:0 6px 18px color-mix(in srgb,var(--brand) 45%,transparent)}
+.tab.fab em{font-style:normal;color:var(--brand);font-weight:600}
+@media (min-width:960px){
+  .side{display:flex;flex-direction:column;gap:6px;width:250px;flex:none;position:sticky;top:0;height:100vh;padding:20px 14px;border-right:1px solid var(--line);background:var(--surface)}
+  .side .brand{padding:0 8px 18px}
+  .navi{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:11px;border:0;background:none;text-align:left;color:var(--ink-2);font-weight:500;position:relative}
+  .navi:hover{background:var(--surface-2);color:var(--ink)}
+  .navi[aria-current="page"]{background:var(--brand-soft);color:var(--brand-deep)}
+  .navi .badge{position:static;margin-left:auto;border-color:transparent}
+  .side .newbtn{margin:4px 0 12px}
+  .side .me{margin-top:auto;display:flex;align-items:center;gap:10px;padding:10px;border-radius:12px;border:1px solid var(--line);background:var(--bg);text-align:left}
+  .side .me span{min-width:0}.side .me b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.side .me small{display:block;color:var(--ink-3);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tabbar,.topbar .brand,.topbar .avbtn{display:none}
+  .topbar{padding:14px 28px}
+  main{padding:8px 28px 48px}
+}
+
+/* type + blocks */
+.hello{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px 16px;padding-top:6px}
+.hello h1{font-size:clamp(22px,4.5vw,30px);font-weight:700}
+.hello p{margin:2px 0 0;color:var(--ink-2)}
+.sec{display:flex;flex-direction:column;gap:12px}
+.sech{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.sech h2{font-size:18px;font-weight:600}
+.sech .cnt{color:var(--ink-3);font-size:13px}
+.sech a,.link{color:var(--brand);font-weight:500;font-size:14px;background:none;border:0;padding:0;margin-left:auto}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media (min-width:640px){.stats{grid-template-columns:repeat(4,1fr)}}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;text-align:left;display:flex;flex-direction:column;gap:2px}
+.stat b{font-family:var(--ff-d);font-size:28px;font-weight:700;line-height:1.1;font-variant-numeric:tabular-nums}
+.stat span{font-size:13px;color:var(--ink-2);display:flex;align-items:center;gap:6px}
+.stat .dot{width:8px;height:8px;border-radius:50%}
+.stat.hot{border-color:color-mix(in srgb,var(--crit) 45%,var(--line));background:color-mix(in srgb,var(--crit-soft) 55%,var(--surface))}
+.stat.hot b{color:var(--crit)}
+
+/* dept tiles */
+.dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.dtile{--c:var(--brand);display:flex;flex-direction:column;align-items:flex-start;gap:10px;padding:14px;border-radius:var(--r);border:1px solid var(--line);background:var(--surface);text-align:left;transition:transform .15s,border-color .15s}
+.dtile:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--c) 50%,var(--line))}
+.dtile b{font-size:14.5px;font-weight:600;line-height:1.3}
+.dtile small{color:var(--ink-3);font-size:12px;line-height:1.4}
+.dtile[aria-pressed="true"]{border-color:var(--c);box-shadow:0 0 0 2px color-mix(in srgb,var(--c) 30%,transparent)}
+.dico{--c:var(--brand);width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:var(--c);background:color-mix(in srgb,var(--c) 15%,var(--surface))}
+.dico.sm{width:28px;height:28px;border-radius:8px}
+.dico.sm .ic{width:16px;height:16px}
+
+/* chips + pills */
+.pill{display:inline-flex;align-items:center;gap:5px;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:600;white-space:nowrap;line-height:1.7}
+.t-warn{background:var(--warn-soft);color:var(--warn)}.t-info{background:var(--info-soft);color:var(--info)}
+.t-brand{background:var(--brand-soft);color:var(--brand-deep)}.t-violet{background:var(--violet-soft);color:var(--violet)}
+.t-ok{background:var(--ok-soft);color:var(--ok)}.t-mute{background:var(--mute-soft);color:var(--mute)}.t-crit{background:var(--crit-soft);color:var(--crit)}
+.urg{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600}
+.urg i{width:8px;height:8px;border-radius:50%;background:currentColor}
+.u-critical{color:var(--crit)}.u-urgent{color:var(--warn)}.u-normal{color:var(--info)}
+.u-critical i{box-shadow:0 0 0 3px color-mix(in srgb,var(--crit) 25%,transparent);animation:pulse 1.6s infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 6px color-mix(in srgb,var(--crit) 0%,transparent)}}
+.tag{display:inline-flex;align-items:center;gap:4px;font-size:12px;padding:1px 8px;border-radius:6px;background:var(--surface-2);color:var(--ink-2)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:5px 12px;font-size:13.5px;color:var(--ink-2)}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+
+/* ticket cards */
+.tlist{display:grid;gap:10px}
+@media (min-width:900px){.tlist.two{grid-template-columns:1fr 1fr}}
+.tcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px;display:flex;flex-direction:column;gap:6px;cursor:pointer;transition:border-color .15s,box-shadow .15s}
+.tcard:hover{border-color:color-mix(in srgb,var(--brand) 40%,var(--line));box-shadow:var(--shadow)}
+.tcard.crit{border-color:color-mix(in srgb,var(--crit) 40%,var(--line))}
+.tc-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tc-top .code{color:var(--ink-3)}
+.tc-title{font-weight:600;font-size:15.5px;line-height:1.4}
+.tc-meta{display:flex;flex-wrap:wrap;gap:4px 12px;color:var(--ink-2);font-size:13px;align-items:center}
+.tc-meta span{display:inline-flex;align-items:center;gap:5px}
+.tc-foot{display:flex;align-items:center;gap:8px;margin-top:4px;flex-wrap:wrap}
+.empty{border:1.5px dashed var(--line);border-radius:var(--r);padding:22px;text-align:center;color:var(--ink-3);font-size:14px}
+
+/* buttons + forms */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:11px;border:1px solid var(--line);background:var(--surface);padding:9px 16px;font-weight:600;font-size:14.5px;color:var(--ink);white-space:nowrap}
+.btn:hover{background:var(--surface-2)}
+.btn.pri{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
+.btn.pri:hover{filter:brightness(1.07)}
+.btn.danger{color:var(--crit)}
+.btn.sm{padding:6px 12px;font-size:13.5px;border-radius:9px}
+.btn.block{width:100%}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.field{display:flex;flex-direction:column;gap:6px}
+.field>label,.lbl{font-weight:600;font-size:14px}
+.lbl small,.field>label small{font-weight:400;color:var(--ink-3)}
+.inp{width:100%;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:10px 12px;font-size:15px}
+textarea.inp{min-height:84px;resize:vertical}
+.inp:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px color-mix(in srgb,var(--brand) 20%,transparent)}
+.row2{display:grid;gap:14px}
+@media (min-width:640px){.row2{grid-template-columns:1fr 1fr}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px}
+.form{display:flex;flex-direction:column;gap:18px}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.segb{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:10px;text-align:left;display:flex;flex-direction:column;gap:2px}
+.segb small{color:var(--ink-3);font-size:12px;line-height:1.35}
+.segb[aria-pressed="true"].u-critical{border-color:var(--crit);background:var(--crit-soft)}
+.segb[aria-pressed="true"].u-urgent{border-color:var(--warn);background:var(--warn-soft)}
+.segb[aria-pressed="true"].u-normal{border-color:var(--info);background:var(--info-soft)}
+.photos{display:flex;gap:8px;flex-wrap:wrap}
+.ph{position:relative;width:84px;height:84px;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:var(--surface-2)}
+.ph img{width:100%;height:100%;object-fit:cover;display:block}
+.ph button{position:absolute;top:4px;right:4px;width:24px;height:24px;border-radius:50%;border:0;background:rgba(0,0,0,.6);color:#fff;display:grid;place-items:center;padding:0}
+.addph{width:84px;height:84px;border-radius:12px;border:1.5px dashed var(--line);display:grid;place-items:center;color:var(--ink-3);cursor:pointer;text-align:center;font-size:11.5px;align-content:center;gap:2px}
+.addph input{display:none}
+.banner{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:12px;background:var(--warn-soft);color:var(--ink);font-size:14px}
+.banner .ic{color:var(--warn);margin-top:2px}
+
+/* filters */
+.filters{display:flex;flex-direction:column;gap:10px}
+.searchbox{position:relative}
+.searchbox .ic{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--ink-3)}
+.searchbox .inp{padding-left:40px}
+.frow{display:flex;gap:8px;flex-wrap:wrap}
+.frow select{flex:1 1 150px;width:auto}
+
+/* table */
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+table{width:100%;border-collapse:collapse;font-size:14px;min-width:560px}
+th{font-weight:600;font-size:12px;color:var(--ink-3);text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);letter-spacing:.02em}
+td{padding:10px 12px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+tr:last-child td{border-bottom:0}
+tbody tr{cursor:pointer}tbody tr:hover{background:var(--surface-2)}
+td.n{text-align:right;width:84px}th.n{text-align:right}
+td .zero{color:var(--ink-3)}
+td .hotn{color:var(--crit);font-weight:700}
+
+/* directory */
+.dirgrid{display:grid;gap:12px}
+@media (min-width:760px){.dirgrid{grid-template-columns:1fr 1fr}}
+.dcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:12px}
+.dcard header{display:flex;gap:12px;align-items:flex-start}
+.dcard header h3{font-size:16px}
+.dcard header p{margin:2px 0 0;color:var(--ink-3);font-size:13px}
+.people{display:flex;flex-direction:column;gap:6px}
+.person{display:flex;align-items:center;gap:10px;font-size:14px}
+.person .ext{margin-left:auto;color:var(--ink-2)}
+.dstats{display:flex;gap:14px;font-size:13px;color:var(--ink-2);flex-wrap:wrap}
+.dstats b{color:var(--ink);font-variant-numeric:tabular-nums}
+
+/* notifications */
+.nlist{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.nitem{display:flex;gap:12px;padding:13px 14px;border-bottom:1px solid var(--line);cursor:pointer;align-items:flex-start}
+.nitem:last-child{border-bottom:0}
+.nitem:hover{background:var(--surface-2)}
+.nitem.unread{background:color-mix(in srgb,var(--brand-soft) 55%,var(--surface))}
+.nitem .nt{flex:1;min-width:0;font-size:14px}
+.nitem .nt b{font-weight:600}
+.nitem .nt small{display:block;color:var(--ink-3);font-size:12.5px;margin-top:2px}
+.nitem .ud{width:9px;height:9px;border-radius:50%;background:var(--brand);margin-top:7px;flex:none}
+
+/* sheet */
+.scrim{position:fixed;inset:0;background:rgba(6,18,24,.45);z-index:40;animation:fade .2s}
+.sheet{position:fixed;z-index:50;left:0;right:0;bottom:0;max-height:92%;background:var(--surface);border-radius:22px 22px 0 0;display:flex;flex-direction:column;animation:up .25s cubic-bezier(.2,.8,.2,1);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (min-width:760px){.sheet{left:auto;top:0;bottom:0;width:560px;max-height:none;border-radius:0;border-left:1px solid var(--line);animation:side .25s cubic-bezier(.2,.8,.2,1)}}
+@keyframes up{from{transform:translateY(40px);opacity:.4}}
+@keyframes side{from{transform:translateX(40px);opacity:.4}}
+@keyframes fade{from{opacity:0}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.shead{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--line)}
+.shead h2{font-size:17px;flex:1;min-width:0}
+.sbody{overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:18px;flex:1;overscroll-behavior:contain}
+.sfoot{padding:12px 16px;border-top:1px solid var(--line);display:flex;gap:8px;align-items:flex-end}
+.dtitle{font-size:21px;font-weight:700}
+.steps{display:flex;gap:4px}
+.step{flex:1;display:flex;flex-direction:column;gap:6px;font-size:11.5px;color:var(--ink-3);text-align:center}
+.step i{height:5px;border-radius:9px;background:var(--surface-2)}
+.step.on i{background:var(--brand)}.step.on{color:var(--ink-2)}
+.step.cur{color:var(--brand-deep);font-weight:600}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:8px 16px;font-size:14px}
+.kv dt{color:var(--ink-3)}.kv dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.acts{display:flex;flex-wrap:wrap;gap:8px}
+.apanel{border:1px solid var(--brand);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:12px;background:color-mix(in srgb,var(--brand-soft) 35%,var(--surface))}
+.apanel h3{font-size:15px}
+.stars{display:flex;gap:4px}
+.stars button{border:0;background:none;padding:2px;color:var(--line)}
+.stars button.on{color:var(--warn)}
+.stars .ic{width:30px;height:30px;fill:currentColor;stroke:none}
+.tl{display:flex;flex-direction:column;gap:14px}
+.tle{display:flex;gap:10px}
+.tle .tlb{flex:1;min-width:0;font-size:14px}
+.tle .tlb .who{font-weight:600}
+.tle .tlb time{color:var(--ink-3);font-size:12px;margin-left:6px}
+.bubble{margin-top:4px;background:var(--surface-2);border-radius:4px 14px 14px 14px;padding:8px 12px;white-space:pre-wrap;overflow-wrap:anywhere}
+.tle.mine .bubble{background:var(--brand-soft)}
+.sysdot{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--surface-2);color:var(--ink-2);flex:none}
+.sysdot .ic{width:14px;height:14px}
+.lightbox{position:fixed;inset:0;z-index:70;background:rgba(0,0,0,.88);display:grid;place-items:center;padding:16px}
+.lightbox img{max-height:90%;border-radius:10px}
+.toasts{position:fixed;z-index:80;top:calc(12px + env(safe-area-inset-top,0px));left:16px;right:16px;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none}
+@media (min-width:760px){.toasts{left:auto;right:20px;align-items:flex-end}}
+.toast{pointer-events:auto;max-width:420px;width:100%;background:var(--ink);color:var(--bg);border-radius:14px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start;box-shadow:0 10px 30px rgba(0,0,0,.25);animation:up .25s;cursor:pointer;font-size:14px}
+.toast small{display:block;opacity:.7;font-size:12.5px}
+.rolecards{display:grid;gap:10px}
+.rolec{display:flex;gap:12px;align-items:flex-start;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:14px}
+.rolec b{display:block}.rolec small{color:var(--ink-3);font-size:13px}
+.rolec[aria-pressed="true"]{border-color:var(--brand);background:var(--brand-soft)}
+.howto{display:grid;gap:10px}
+.howto div{border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:14px}
+.howto b{display:block;margin-bottom:4px}
+.howto ol{margin:0;padding-left:20px;color:var(--ink-2)}
+.toggle{display:flex;align-items:center;gap:10px;font-size:14px}
+.skel{height:86px;border-radius:var(--r);background:linear-gradient(90deg,var(--surface) 0%,var(--surface-2) 50%,var(--surface) 100%);background-size:200% 100%;animation:sk 1.3s infinite}
+@keyframes sk{to{background-position:-200% 0}}
+.sample{font-size:11px;padding:0 6px;border-radius:5px;border:1px dashed var(--ink-3);color:var(--ink-3)}
+
+/* AI assist */
+.aibox{border:1px solid color-mix(in srgb,var(--violet) 35%,var(--line));background:color-mix(in srgb,var(--violet-soft) 60%,var(--surface));border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.aih{display:flex;gap:12px;align-items:flex-start}.aih .dico{flex:none}
+.aih b{display:block}.aih small{display:block;color:var(--ink-2);font-size:13px;line-height:1.45}
+.airow{display:flex;gap:8px;flex-wrap:wrap}
+.aibtn{background:var(--violet);border-color:var(--violet);color:var(--surface)}
+.aibtn:hover{background:var(--violet);filter:brightness(1.08)}
+.aimsg{margin:0;font-size:13.5px;color:var(--ink);background:var(--surface);border-radius:10px;padding:8px 12px}
+.aimsg.err{color:var(--crit)}
+/* report */
+.rhead{align-items:flex-end}
+.rctl{display:flex;gap:8px;flex-wrap:wrap}
+.rctl select{width:auto;min-width:170px}
+.stats.six{grid-template-columns:repeat(2,1fr)}
+@media (min-width:640px){.stats.six{grid-template-columns:repeat(3,1fr)}}
+@media (min-width:1100px){.stats.six{grid-template-columns:repeat(6,1fr)}}
+.rtile b{font-size:24px}
+.rtile small{color:var(--ink-3);font-size:12px;line-height:1.35}
+.rgrid{display:grid;gap:14px}
+@media (min-width:1000px){.rgrid{grid-template-columns:1.25fr 1fr}}
+.chartwrap{overflow-x:auto}
+.chartwrap svg{width:100%;min-width:520px;height:auto;display:block}
+.cgrid{stroke:var(--line);stroke-width:1}
+.caxis{stroke:var(--ink-3);stroke-width:1}
+.ctick{fill:var(--ink-3);font-size:13px;font-family:var(--ff);font-variant-numeric:tabular-nums}
+.cbar{fill:var(--brand)}
+.chit{fill:transparent;cursor:default}
+.chit.hot-tip{fill:color-mix(in srgb,var(--brand) 10%,transparent)}
+.hbars{display:flex;flex-direction:column;gap:8px}
+.hrow{display:grid;grid-template-columns:minmax(0,190px) 1fr 32px;gap:10px;align-items:center;font-size:13px;border-radius:8px;padding:2px 4px}
+.hrow.hot-tip{background:var(--surface-2)}
+.hl{display:flex;align-items:center;gap:8px;min-width:0}
+.hl span:last-child{line-height:1.3}
+.ht{height:14px;background:var(--surface-2);border-radius:4px;overflow:hidden}
+.ht i{display:block;height:100%;background:var(--brand);border-radius:0 4px 4px 0}
+.hrow b{text-align:right}
+@media (max-width:520px){.hrow{grid-template-columns:1fr 32px}.hrow .ht{grid-column:1/-1;grid-row:2}}
+.rtable{min-width:760px}
+.ctip{position:fixed;z-index:90;pointer-events:none;background:var(--ink);color:var(--bg);font-size:12.5px;line-height:1.5;padding:7px 10px;border-radius:8px;white-space:pre-line;max-width:260px;box-shadow:0 6px 20px rgba(0,0,0,.2)}
+
+html,body{margin:0;min-height:100%}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+img{max-width:100%}
+#login{min-height:100vh;display:grid;place-items:center;padding:24px 16px}
+.lcard{width:100%;max-width:460px;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:22px;display:flex;flex-direction:column;gap:16px;box-shadow:var(--shadow)}
+.lcard h1{font-size:22px}
+.lmuted{margin:4px 0 0;color:var(--ink-2);font-size:14px}
+.lerr{margin:0;color:var(--crit);font-size:13.5px}
+.lerr:empty{display:none}
+.lcode{font-size:22px;letter-spacing:.3em;text-align:center}
+.dupe{display:flex;gap:12px;align-items:flex-start;border:1px solid color-mix(in srgb,var(--warn) 45%,var(--line));background:color-mix(in srgb,var(--warn-soft) 70%,var(--surface));border-radius:14px;padding:14px}
+.dupe>.ic{color:var(--warn);margin-top:2px}
+.dupe-b{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
+.dupe-b>small{color:var(--ink-2);font-size:13px;line-height:1.45}
+.dupe-i{display:flex;gap:10px;justify-content:space-between;align-items:center;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.dupe-i small{color:var(--ink-3);font-size:12.5px}
+.dupe-t{font-weight:600;margin-top:2px}
+.dupe-a{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.linehint{display:flex;gap:12px;align-items:center;border:1px solid color-mix(in srgb,var(--ok) 35%,var(--line));background:color-mix(in srgb,var(--ok-soft) 70%,var(--surface));border-radius:14px;padding:12px 14px;flex-wrap:wrap}
+.linehint>.ic{color:var(--ok)}
+.linehint>div{flex:1;min-width:180px}.linehint b{display:block}.linehint small{color:var(--ink-2);font-size:13px}
+.lineok{display:flex;gap:8px;align-items:flex-start;color:var(--ok);font-size:14px}.lineok span{color:var(--ink)}
+.linkbox{border:1px dashed var(--ok);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px;background:color-mix(in srgb,var(--ok-soft) 45%,var(--surface))}
+.linkbox ol{margin:0;padding-left:20px;font-size:14px;display:flex;flex-direction:column;gap:4px}
+.linkbox a{color:var(--brand)}
+.bigcode{font-family:var(--ff-m);font-size:34px;letter-spacing:.25em;font-weight:500;text-align:center;background:var(--surface);border-radius:10px;padding:8px}
+.linkbox small{color:var(--ink-3);font-size:12.5px}
+#fatal{position:fixed;inset:0;z-index:999;display:grid;place-items:center;padding:16px;background:rgba(6,18,24,.5)}
+#fatal .fcard{max-width:520px;width:100%;background:var(--surface);color:var(--ink);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:10px}
+#fatal pre{white-space:pre-wrap;font-size:12px;background:var(--surface-2);padding:10px;border-radius:8px;max-height:200px;overflow:auto;margin:0}
+#fatal button{font:inherit;padding:8px 14px;border-radius:10px;border:1px solid var(--line);background:var(--surface);cursor:pointer}
+</style>
+</head>
+<body>
+
+<div id="login" hidden></div>
+<div class="app" hidden>
+  <aside class="side" id="side"></aside>
+  <div class="mainwrap">
+    <header class="topbar" id="top"></header>
+    <main id="main"></main>
+  </div>
+  <nav class="tabbar" id="tabs" aria-label="เมนูหลัก"></nav>
+</div>
+<div class="scrim" id="scrim" hidden></div>
+<section class="sheet" id="sheet" hidden role="dialog" aria-modal="true"></section>
+<div id="lb"></div>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+<script>
+/* ================== ตั้งค่า LIFF (แก้ 2 บรรทัดนี้) ================== */
+const LIFF_ID = '2011772311-Ptw8b18f';                                         // เช่น 2011766740-AbCdEfGh
+const API_URL = 'https://script.google.com/macros/s/AKfycbyuuueaZ-Orku0y4W5fpLxRdhHdA_nUVUTOBYITgx9yNOedmse_vdJ0IBCztkaOgPEJ/exec';   // Deploy → Web app URL
+/* ==================================================================== */
+/* ---------- error screen: never leave a blank page ---------- */
+function showFatal(e){try{console.error(e);const msg=String(e&&(e.stack||e.message)||e).slice(0,600);let el=document.getElementById('fatal');if(!el){el=document.createElement('div');el.id='fatal';document.body.appendChild(el)}
+ el.innerHTML=`<div class="fcard"><b>ระบบแสดงผลไม่สำเร็จ</b><p>ลองกด “ล้างข้อมูลในเครื่องนี้” แล้วเข้าสู่ระบบใหม่ ถ้ายังเป็นอยู่ ให้ถ่ายภาพหน้าจอนี้ส่งผู้ดูแลระบบ</p><pre></pre><div><button id="f_reload">โหลดใหม่</button> <button id="f_clear">ล้างข้อมูลในเครื่องนี้</button></div></div>`;
+ el.querySelector('pre').textContent=msg;el.querySelector('#f_reload').onclick=()=>location.reload();el.querySelector('#f_clear').onclick=()=>{try{Object.keys(localStorage).filter(k=>k.startsWith('mr.')).forEach(k=>localStorage.removeItem(k))}catch{}location.reload()}}catch(_){}}
+window.addEventListener('error',e=>showFatal(e.error||e.message));
+window.addEventListener('unhandledrejection',e=>{const r=e.reason;if(r&&/ACCESS|AUTH|NET|BUSY|TAKEN/.test(String(r.message||r)))return;showFatal(r)});
+const ICONS={
+ bolt:'<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>',
+ drop:'<path d="M12 2.7s-6 6.6-6 11a6 6 0 0 0 12 0c0-4.4-6-11-6-11z"/>',
+ snow:'<path d="M12 2v20M3.3 7l17.4 10M3.3 17 20.7 7M9 4l3 2 3-2M9 20l3-2 3 2"/>',
+ pulse:'<path d="M3 12h4l2-6 4 12 2-6h6"/>',
+ monitor:'<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>',
+ phone:'<path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A17 17 0 0 1 3 5a2 2 0 0 1 2-2z"/>',
+ gas:'<rect x="7" y="7" width="10" height="15" rx="3"/><path d="M10 7V3h4v4M10 12h4"/>',
+ building:'<path d="M4 21V6l8-3 8 3v15M2 21h20M9 21v-4h6v4M8.5 9h.01M12 9h.01M15.5 9h.01M8.5 13h.01M12 13h.01M15.5 13h.01"/>',
+ bed:'<path d="M3 19V6M3 14h18v5M21 14a4 4 0 0 0-4-4h-7v4"/><circle cx="6.5" cy="11" r="1.6"/>',
+ lift:'<rect x="5" y="3" width="14" height="18" rx="2"/><path d="m9 10 3-3 3 3M9 14l3 3 3-3"/>',
+ home:'<path d="M3 11 12 4l9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+ list:'<path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01"/>',
+ plus:'<path d="M12 5v14M5 12h14"/>',
+ bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10 21a2 2 0 0 0 4 0"/>',
+ team:'<circle cx="9" cy="8" r="3.5"/><path d="M2 20c0-3.5 3-6 7-6s7 2.5 7 6M16 4.5a3.5 3.5 0 0 1 0 7M22 20c0-3-2-5-4.5-5.7"/>',
+ search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
+ x:'<path d="M18 6 6 18M6 6l12 12"/>',
+ check:'<path d="m5 12 5 5L20 7"/>',
+ clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+ camera:'<path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.5" r="3.5"/>',
+ send:'<path d="M4 12 20 4l-4 16-4-7z"/><path d="m12 13 8-9"/>',
+ forward:'<path d="M5 12h14M13 6l6 6-6 6"/>',
+ link:'<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
+ star:'<path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z"/>',
+ pin:'<path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',
+ mobile:'<rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M11 18.5h2"/>',
+ alert:'<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17h.01"/>',
+ user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/>',
+ wrench:'<path d="M14.7 6.3a4 4 0 0 0 5 5L12 19a2.1 2.1 0 0 1-3-3z"/><path d="M14.7 6.3 17 4l3 3-2.3 2.3"/>',
+ pause:'<path d="M9 5v14M15 5v14"/>',
+ play:'<path d="M7 4v16l13-8z"/>',
+ undo:'<path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/>',
+ chat:'<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/>',
+ cog:'<path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/>',
+ cross:'<path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z"/>',
+ trash:'<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',
+ spark:'<path d="M11 3l1.9 5.1L18 10l-5.1 1.9L11 17l-1.9-5.1L4 10l5.1-1.9z"/><path d="M19 14l.8 2.2L22 17l-2.2.8L19 20l-.8-2.2L16 17l2.2-.8z"/>',
+ chart:'<path d="M3 20h18M6 20v-7M11 20V5M16 20v-10M21 20"/>',
+ download:'<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>'
+};
+const DEPTS=[
+ {id:'elec',name:'งานไฟฟ้า',color:'#D99A00',icon:'bolt',desc:'ไฟดับ ปลั๊ก สวิตช์ หลอดไฟ เบรกเกอร์ เครื่องกำเนิดไฟฟ้าสำรอง',quick:['ไฟดับ','ปลั๊กไฟชำรุด','หลอดไฟเสีย','เบรกเกอร์ตัด','ไฟกะพริบ']},
+ {id:'plumb',name:'งานประปาและสุขาภิบาล',color:'#2B7FD6',icon:'drop',desc:'ท่อรั่ว ส้วมตัน น้ำไม่ไหล ก๊อกน้ำ ระบบบำบัดน้ำเสีย',quick:['ท่อน้ำรั่ว','ส้วมตัน','น้ำไม่ไหล','ก๊อกน้ำชำรุด','ท่อระบายน้ำอุดตัน']},
+ {id:'hvac',name:'งานระบบปรับอากาศ',color:'#1597AB',icon:'snow',desc:'แอร์ ห้องความดันลบ พัดลมระบายอากาศ ห้องเย็นเก็บยา',quick:['แอร์ไม่เย็น','แอร์น้ำหยด','แอร์มีเสียงดัง','พัดลมระบายอากาศเสีย','อุณหภูมิห้องเก็บยาผิดปกติ']},
+ {id:'biomed',name:'งานเครื่องมือแพทย์',color:'#D2453A',icon:'pulse',desc:'เครื่องช่วยหายใจ Monitor Infusion pump Defibrillator สอบเทียบ',quick:['เครื่องเปิดไม่ติด','มีสัญญาณเตือน (Alarm)','ค่าที่วัดผิดปกติ','สาย/อุปกรณ์ต่อพ่วงชำรุด','ขอสอบเทียบ (Calibration)']},
+ {id:'it',name:'งานเทคโนโลยีสารสนเทศ',color:'#5B5BD6',icon:'monitor',desc:'คอมพิวเตอร์ ระบบ HIS เครื่องพิมพ์ เครือข่าย บาร์โค้ด',quick:['คอมพิวเตอร์เปิดไม่ติด','เข้าระบบ HIS ไม่ได้','เครื่องพิมพ์ไม่ทำงาน','อินเทอร์เน็ตใช้ไม่ได้','เครื่องอ่านบาร์โค้ดเสีย']},
+ {id:'comm',name:'งานโทรศัพท์และสื่อสาร',color:'#8A4FC7',icon:'phone',desc:'โทรศัพท์ภายใน Nurse call เสียงตามสาย วิทยุสื่อสาร',quick:['โทรศัพท์ภายในเสีย','Nurse call ไม่ดัง','เสียงตามสายไม่ได้ยิน','ขอย้ายเบอร์โทรศัพท์']},
+ {id:'gas',name:'งานก๊าซทางการแพทย์',color:'#2E9E6A',icon:'gas',desc:'ออกซิเจน Suction Medical air ท่อก๊าซ Flowmeter',quick:['ออกซิเจนไม่ไหล','แรงดันออกซิเจนต่ำ','Suction ไม่ดูด','ได้ยินเสียงก๊าซรั่ว','Flowmeter ชำรุด']},
+ {id:'civil',name:'งานอาคารและโยธา',color:'#A0703F',icon:'building',desc:'ประตู หน้าต่าง ฝ้า กระเบื้อง หลังคารั่ว กุญแจ งานสี',quick:['ประตูชำรุด','หลังคารั่วซึม','ฝ้าเพดานหลุด','กระเบื้องแตก','ลูกบิด/กุญแจเสีย']},
+ {id:'furn',name:'งานเฟอร์นิเจอร์และครุภัณฑ์',color:'#C2567E',icon:'bed',desc:'เตียงผู้ป่วย รถเข็น เปลนอน โต๊ะ เก้าอี้ ตู้',quick:['เตียงผู้ป่วยปรับไม่ได้','ล้อรถเข็นชำรุด','ราวกั้นเตียงเสีย','เก้าอี้ชำรุด','ตู้/ลิ้นชักเสีย']}
+];
+const DM=Object.fromEntries(DEPTS.map(d=>[d.id,d]));
+const UNITS=['ห้องฉุกเฉิน (ER)','ผู้ป่วยนอก (OPD)','หอผู้ป่วยอายุรกรรม','หอผู้ป่วยศัลยกรรม','หอผู้ป่วยหนัก (ICU)','ห้องผ่าตัด (OR)','ห้องคลอด (LR)','หอผู้ป่วยเด็ก','หอผู้ป่วยพิเศษ','ไตเทียม','ห้องปฏิบัติการ (Lab)','รังสีวิทยา (X-ray)','เภสัชกรรม','ทันตกรรม','กายภาพบำบัด','หน่วยจ่ายกลาง (CSSD)','เวชระเบียน','โภชนาการ','ซักฟอก','การเงินและบัญชี','บริหารทั่วไป','อื่นๆ'];
+const STATUS={new:{l:'รอรับงาน',t:'warn'},accepted:{l:'รับงานแล้ว',t:'info'},working:{l:'กำลังซ่อม',t:'brand'},waiting:{l:'รออะไหล่',t:'violet'},done:{l:'รอตรวจรับ',t:'ok'},closed:{l:'ปิดงาน',t:'mute'},cancelled:{l:'ยกเลิก',t:'mute'}};
+const ACTIVE=['new','accepted','working','waiting','done'];
+const URG={critical:{l:'ด่วนมาก',sla:15,h:'กระทบผู้ป่วยหรือความปลอดภัย',s:'รับงานใน 15 นาที'},urgent:{l:'ด่วน',sla:60,h:'กระทบการทำงานของหน่วย',s:'รับงานใน 1 ชั่วโมง'},normal:{l:'ปกติ',sla:240,h:'รอได้ ไม่กระทบผู้ป่วย',s:'รับงานใน 4 ชั่วโมง'}};
+const URANK={critical:0,urgent:1,normal:2};
+const ROLES={requester:{l:'เจ้าหน้าที่ผู้แจ้งซ่อม',d:'พยาบาล แพทย์ เจ้าหน้าที่หน่วยงาน แจ้งปัญหาและติดตามงาน',i:'user'},tech:{l:'ช่าง / เจ้าหน้าที่ซ่อม',d:'รับงาน อัปเดตสถานะ ส่งต่อ หรือขอความร่วมมือแผนกอื่น',i:'wrench'},admin:{l:'หัวหน้างานซ่อมบำรุง',d:'ดูภาพรวมทุกงาน มอบหมายช่าง ติดตามงานเกินเวลา',i:'team'}};
+
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const I=(n,c='')=>`<svg class="ic ${c}" viewBox="0 0 24 24" aria-hidden="true">${ICONS[n]||''}</svg>`;
+const rid=()=>Math.random().toString(36).slice(2,10);
+const ls={get(k,d){try{const v=localStorage.getItem('mr.'+k);return v==null?d:JSON.parse(v)}catch{return d}},set(k,v){try{localStorage.setItem('mr.'+k,JSON.stringify(v))}catch{}}};
+
+const S={uid:ls.get('uid',null),token:ls.get('token',null),code:ls.get('code',''),authed:false,ver:0,photoCache:{},login:{step:'code',mode:'new'},dbState:'loading',
+ members:{},membersLoaded:false,tickets:[],ticketsLoaded:false,lastSeen:ls.get('lastSeen',0),seenBase:ls.get('lastSeen',0),
+ view:ls.get('view','home'),openId:null,action:null,sheet:null,lightbox:null,
+ draft:null,filter:{q:'',st:'active',dept:'',scope:'all',urg:''},profiles:{},
+ bootAt:Date.now(),toasted:new Set(),busy:false,profDraft:null,onboarded:false};
+if(!['home','list','depts','notif','new','report'].includes(S.view))S.view='home';
+
+const me=()=>S.uid?S.members[S.uid]:null;
+const isStaff=()=>['tech','admin'].includes(me()?.role);
+function nm(id,fb){if(id==='system')return 'ระบบ';if(!id)return fb||'ผู้แจ้ง';const n=S.members[id]?.name;if(id===S.uid)return (n||'คุณ')+' (คุณ)';return n||fb||'ผู้ใช้งาน'}
+function av(id,cls=''){const n=String(S.members[id]?.name||'?');let h=0;for(const c of String(id||''))h=(h*31+c.charCodeAt(0))%360;return `<span class="av ${cls}" style="background:hsl(${h} 45% 88%);color:hsl(${h} 45% 28%)">${esc(n.trim().slice(0,1))}</span>`}
+function deptIco(id,cls=''){const d=DM[id];if(!d)return '';return `<span class="dico ${cls}" style="--c:${d.color}">${I(d.icon)}</span>`}
+const dname=id=>id==='all'?'ทุกแผนก':(DM[id]?.name||'-');
+function rel(ts){if(!ts)return '';const s=(Date.now()-ts)/1000;if(s<60)return 'เมื่อสักครู่';if(s<3600)return Math.floor(s/60)+' นาทีที่แล้ว';if(s<86400)return Math.floor(s/3600)+' ชม.ที่แล้ว';if(s<86400*7)return Math.floor(s/86400)+' วันที่แล้ว';return new Date(ts).toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'2-digit'})}
+const full=ts=>ts?new Date(ts).toLocaleString('th-TH',{day:'numeric',month:'short',year:'2-digit',hour:'2-digit',minute:'2-digit'}):'-';
+function dur(ms){const m=Math.round(ms/60000);if(m<60)return m+' นาที';const h=Math.floor(m/60);if(h<48)return h+' ชม. '+(m%60)+' นาที';return Math.floor(h/24)+' วัน '+(h%24)+' ชม.'}
+const overdue=t=>t.status==='new'&&(Date.now()-t.createdAt)>(URG[t.urgency]?.sla||240)*60000;
+const statusPill=s=>`<span class="pill t-${STATUS[s]?.t||'mute'}">${esc(STATUS[s]?.l||s)}</span>`;
+const urgTag=u=>`<span class="urg u-${u}"><i></i>${esc(URG[u]?.l||'')}</span>`;
+function mkCode(){const d=new Date();const y=(d.getFullYear()+543)%100;const p=n=>String(n).padStart(2,'0');return `MR${p(y)}${p(d.getMonth()+1)}${p(d.getDate())}-${Math.random().toString(36).slice(2,6).toUpperCase()}`}
+function newDraft(dept){return{dept:dept||'',title:'',detail:'',urgency:'normal',unit:me()?.unit||'',location:'',asset:'',ext:me()?.ext||'',photos:[]}}
+const inMyDept=t=>{const m=me();if(!m||m.role==='requester')return false;if(m.dept==='all')return true;return t.dept===m.dept||(t.collab||[]).includes(m.dept)};
+function relevant(t){if(!S.uid)return false;if(t.createdBy===S.uid||t.assignee===S.uid||(t.followers||[]).includes(S.uid))return true;return inMyDept(t)}
+const byQueue=(a,b)=>(URANK[a.urgency]-URANK[b.urgency])||(a.createdAt-b.createdAt);
+const byNew=(a,b)=>(b.updatedAt||b.createdAt)-(a.updatedAt||a.createdAt);
+const canWrite=()=>!!(S.uid&&S.authed);
+
+/* ---------- notifications ---------- */
+function eventText(t,e){
+ const who=nm(e.by,t.unit);
+ switch(e.kind){
+  case 'create':return `<b>${esc(who)}</b> แจ้งซ่อมใหม่ถึง ${esc(dname(t.dept))}`;
+  case 'accept':return `<b>${esc(who)}</b> รับงานแล้ว`;
+  case 'assign':return `<b>${esc(who)}</b> มอบหมายงานให้ ${esc(nm(e.to))}`;
+  case 'start':return `<b>${esc(who)}</b> เริ่มดำเนินการซ่อม`;
+  case 'wait':return `<b>${esc(who)}</b> พักงานเพื่อรออะไหล่`;
+  case 'resume':return `<b>${esc(who)}</b> กลับมาดำเนินการต่อ`;
+  case 'done':return `<b>${esc(who)}</b> แจ้งว่าซ่อมเสร็จแล้ว รอตรวจรับ`;
+  case 'transfer':return `<b>${esc(who)}</b> ส่งต่องานจาก ${esc(dname(e.from))} ไป ${esc(dname(e.to))}`;
+  case 'collab':return `<b>${esc(who)}</b> ขอความร่วมมือจาก ${esc(dname(e.to))}`;
+  case 'close':return `<b>${esc(who)}</b> ตรวจรับและปิดงาน${e.rating?` · ให้ ${e.rating}/5 ดาว`:''}`;
+  case 'reopen':return `<b>${esc(who)}</b> แจ้งว่ายังไม่เรียบร้อย ขอให้ดำเนินการต่อ`;
+  case 'cancel':return `<b>${esc(who)}</b> ยกเลิกใบแจ้งซ่อม`;
+  case 'comment':return `<b>${esc(who)}</b> ส่งข้อความ`;
+  case 'follow':return `<b>${esc(who)}</b> แจ้งว่าพบปัญหาเดียวกัน`;
+  case 'escalate':return `<b>ระบบ</b> แจ้งหัวหน้างาน: งานเกินเวลารับงาน`;
+ }return `<b>${esc(who)}</b> อัปเดตงาน`;
+}
+const KIND_ICON={follow:'team',escalate:'alert',create:'plus',accept:'check',assign:'user',start:'play',wait:'pause',resume:'play',done:'check',transfer:'forward',collab:'link',close:'star',reopen:'undo',cancel:'x',comment:'chat'};
+function notifs(){const out=[];for(const t of S.tickets){if(!relevant(t))continue;for(const e of (t.log||[])){if(e.by===S.uid)continue;out.push({t,e})}}out.sort((a,b)=>b.e.t-a.e.t);return out.slice(0,120)}
+const unreadCount=()=>S.uid?notifs().filter(n=>n.e.t>S.lastSeen).length:0;
+function checkNew(){const fresh=[];for(const t of S.tickets){if(!relevant(t))continue;for(const e of (t.log||[])){if(e.t>S.bootAt&&e.by!==S.uid&&!S.toasted.has(e.id)){S.toasted.add(e.id);fresh.push({t,e})}}}
+ if(!fresh.length)return;fresh.sort((a,b)=>a.e.t-b.e.t).slice(-3).forEach(({t,e})=>toast(eventText(t,e)+(e.text?`: ${esc(e.text.slice(0,80))}`:''),`${t.code} · ${t.title}`,t.id,KIND_ICON[e.kind]));beep();try{navigator.vibrate&&navigator.vibrate([80,60,80])}catch{}}
+function toast(html,sub,id,icon='bell'){const el=document.createElement('div');el.className='toast';el.innerHTML=`${I(icon)}<div>${html}${sub?`<small>${esc(sub)}</small>`:''}</div>`;if(id)el.onclick=()=>{openTicket(id);el.remove()};$('#toasts').appendChild(el);setTimeout(()=>el.remove(),6500)}
+let actx=null;function soundOn(){return ls.get('sound',true)}
+function beep(){if(!soundOn()||!actx)return;try{const t=actx.currentTime,o=actx.createOscillator(),g=actx.createGain();o.type='sine';o.frequency.setValueAtTime(880,t);o.frequency.setValueAtTime(1320,t+.13);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.18,t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+.38);o.connect(g).connect(actx.destination);o.start(t);o.stop(t+.4)}catch{}}
+addEventListener('pointerdown',()=>{if(!actx){try{actx=new (window.AudioContext||window.webkitAudioContext)()}catch{}}else if(actx.state==='suspended')actx.resume().catch(()=>{})},{passive:true});
+function $(s){return document.querySelector(s)}
+
+/* ---------- DOM patch keeping inputs ---------- */
+function patch(el,html){const saved={};el.querySelectorAll('input[id],textarea[id],select[id]').forEach(x=>{if(x.type!=='file')saved[x.id]=x.type==='checkbox'?x.checked:x.value});
+ const a=document.activeElement,fid=a&&el.contains(a)?a.id:null;let sel=null;try{if(fid&&a.selectionStart!=null)sel=[a.selectionStart,a.selectionEnd]}catch{}
+ const sb=el.querySelector('.sbody'),st=sb?sb.scrollTop:0;
+ el.innerHTML=html;
+ for(const k in saved){const x=el.querySelector('#'+CSS.escape(k));if(x&&!x.hasAttribute('data-fresh')){if(x.type==='checkbox')x.checked=saved[k];else x.value=saved[k]}}
+ if(fid){const x=el.querySelector('#'+CSS.escape(fid));if(x){x.focus({preventScroll:true});if(sel)try{x.setSelectionRange(sel[0],sel[1])}catch{}}}
+ const nb=el.querySelector('.sbody');if(nb&&sb)nb.scrollTop=st;}
+
+/* ---------- views ---------- */
+function tcard(t,opts={}){const d=DM[t.dept];const od=overdue(t);
+ return `<article class="tcard ${t.urgency==='critical'&&ACTIVE.includes(t.status)?'crit':''}" data-act="open" data-id="${esc(t.id)}" tabindex="0">
+ <div class="tc-top"><span class="code mono">${esc(t.code)}</span>${urgTag(t.urgency)}${od?`<span class="pill t-crit">${I('clock','sm')}เกินเวลารับงาน</span>`:''}${t.sample?'<span class="sample">ตัวอย่าง</span>':''}<span class="grow"></span>${statusPill(t.status)}</div>
+ <div class="tc-title">${esc(t.title)}</div>
+ <div class="tc-meta"><span>${deptIco(t.dept,'sm')}${esc(d?.name||'')}</span><span>${I('pin','sm')}${esc(t.location||'-')}</span></div>
+ <div class="tc-meta"><span>${esc(t.unit||'')}</span><span>${esc(rel(t.createdAt))}</span>${t.assignee?`<span>${av(t.assignee,'sm')}${esc(nm(t.assignee))}</span>`:''}${(t.collab||[]).map(c=>`<span class="tag">${I('link','sm')}${esc(dname(c))}</span>`).join('')}</div>
+ ${opts.accept&&t.status==='new'&&canWrite()?`<div class="tc-foot"><button class="btn pri sm" data-act="accept" data-id="${esc(t.id)}">${I('check','sm')}รับงานนี้</button><span class="cnt" style="color:var(--ink-3);font-size:12.5px">${esc(URG[t.urgency]?.s||'')}</span></div>`:''}
+ </article>`}
+const tlist=(arr,empty,opts)=>arr.length?`<div class="tlist ${opts?.two?'two':''}">${arr.map(t=>tcard(t,opts)).join('')}</div>`:`<div class="empty">${empty}</div>`;
+function stat(n,label,tone,hot,act){return `<button class="stat ${hot&&n?'hot':''}" ${act?`data-act="goto" data-go="${act}"`:''}><b>${n}</b><span><i class="dot" style="background:var(--${tone})"></i>${label}</span></button>`}
+function skeleton(){return `<div class="sec"><div class="skel" style="height:60px"></div><div class="stats">${'<div class="skel"></div>'.repeat(4)}</div><div class="skel"></div><div class="skel"></div></div>`}
+
+function viewHome(){
+ if(!S.ticketsLoaded)return skeleton();
+ const m=me();const role=m?.role||'guest';const first=String(S.members[S.uid]?.name||'').split(' ')[0];
+ let h=`<div class="hello"><div><h1>สวัสดี${first?' คุณ'+esc(first):''}</h1><p>${m?`${esc(ROLES[role]?.l)} · ${esc(role==='requester'?(m.unit||''):dname(m.dept))}`:'ยังไม่ได้ตั้งค่าโปรไฟล์'}</p></div></div>`;
+ if(!m){h+=`<div class="card" style="display:flex;flex-direction:column;gap:12px"><h2 style="font-size:18px">เริ่มใช้งานระบบแจ้งซ่อม</h2><p style="margin:0;color:var(--ink-2)">เลือกบทบาทของคุณก่อน ระบบจะจัดหน้าจอและการแจ้งเตือนให้ตรงกับงานของคุณ เช่น ผู้แจ้งจะได้รับแจ้งเมื่อช่างรับงาน ส่วนช่างจะได้รับแจ้งเมื่อมีงานใหม่เข้าแผนก</p><div><button class="btn pri" data-act="profile" ${S.uid?'':'disabled'}>${I('user','sm')}ตั้งค่าโปรไฟล์</button></div></div>`;}
+ if(m&&S.lineOn&&!m.line&&!ls.get('lhide',false))h+=`<div class="linehint">${I('chat')}<div><b>รับแจ้งความคืบหน้าทาง LINE</b><small>${isStaff()?'รู้ทันทีเมื่อผู้แจ้งตอบกลับ ตรวจรับ หรือแจ้งว่ายังไม่เรียบร้อย':'รู้ทันทีเมื่อช่างรับงาน เริ่มซ่อม ซ่อมเสร็จ จนปิดงาน'}</small></div><button class="btn sm pri" data-act="profile">เชื่อม LINE</button><button class="iconbtn" data-act="lhide" aria-label="ซ่อน">${I('x','sm')}</button></div>`;
+ const T=S.tickets;
+ if(role==='tech'||role==='admin'){
+  const mine=T.filter(inMyDept);const q=mine.filter(t=>t.status==='new').sort(byQueue);
+  const myJobs=T.filter(t=>t.assignee===S.uid&&['accepted','working','waiting'].includes(t.status)).sort(byQueue);
+  const od=mine.filter(overdue).length;const today=new Date();today.setHours(0,0,0,0);
+  const doneToday=mine.filter(t=>(t.doneAt||0)>=today.getTime()).length;
+  h+=`<div class="stats">${stat(q.length,'รอรับงาน','warn',false,'list:new')}${stat(mine.filter(t=>['accepted','working','waiting'].includes(t.status)).length,'กำลังดำเนินการ','brand',false,'list:work')}${stat(od,'เกินเวลารับงาน','crit',true,'list:new')}${stat(doneToday,'ซ่อมเสร็จวันนี้','ok')}</div>`;
+  h+=`<div><button class="btn sm" data-act="goto" data-go="report">${I('chart','sm')}ดูรายงานประจำเดือน</button></div>`;
+  if(role==='admin'){h+=adminBoard()}
+  h+=`<section class="sec"><div class="sech"><h2>คิวรอรับงาน</h2><span class="cnt">${esc(dname(m.dept))} · เรียงตามความเร่งด่วน</span></div>${tlist(q.slice(0,12),'ไม่มีงานค้างรับ เยี่ยมมาก',{accept:true,two:true})}</section>`;
+  h+=`<section class="sec"><div class="sech"><h2>งานที่ฉันรับผิดชอบ</h2><span class="cnt">${myJobs.length} งาน</span></div>${tlist(myJobs,'ยังไม่มีงานที่รับไว้ กด “รับงานนี้” ในคิวด้านบน',{two:true})}</section>`;
+  if(m.dept!=='all'){const co=T.filter(t=>(t.collab||[]).includes(m.dept)&&ACTIVE.includes(t.status));if(co.length)h+=`<section class="sec"><div class="sech"><h2>แผนกอื่นขอความร่วมมือ</h2><span class="cnt">${co.length} งาน</span></div>${tlist(co,'',{two:true})}</section>`}
+ }else{
+  const mine=T.filter(t=>t.createdBy===S.uid);const act=mine.filter(t=>ACTIVE.includes(t.status)).sort(byNew);
+  const unit=m?.unit?T.filter(t=>t.unit===m.unit&&t.createdBy!==S.uid&&ACTIVE.includes(t.status)).sort(byNew):[];
+  if(m)h+=`<div class="stats">${stat(act.filter(t=>t.status==='new').length,'รอช่างรับงาน','warn',false,'list:mine')}${stat(act.filter(t=>['accepted','working','waiting'].includes(t.status)).length,'กำลังซ่อม','brand',false,'list:mine')}${stat(act.filter(t=>t.status==='done').length,'รอคุณตรวจรับ','ok',true,'list:mine')}${stat(mine.filter(t=>t.status==='closed').length,'ปิดงานแล้ว','mute')}</div>`;
+  h+=`<section class="sec"><div class="sech"><h2>แจ้งซ่อมกับแผนกไหน</h2><span class="cnt">แตะเพื่อเริ่มแจ้ง</span></div><div class="dgrid">${DEPTS.map(d=>`<button class="dtile" style="--c:${d.color}" data-act="new" data-dept="${d.id}">${deptIco(d.id)}<b>${esc(d.name)}</b><small>${esc(d.desc)}</small></button>`).join('')}</div></section>`;
+  if(m){h+=`<section class="sec"><div class="sech"><h2>ใบงานของฉันที่ยังไม่ปิด</h2><span class="cnt">${act.length} งาน</span></div>${tlist(act,'ยังไม่มีใบแจ้งซ่อมที่ค้างอยู่',{two:true})}</section>`;
+   if(unit.length)h+=`<section class="sec"><div class="sech"><h2>งานของหน่วยงาน ${esc(m.unit)}</h2><span class="cnt">${unit.length} งาน</span></div>${tlist(unit.slice(0,8),'',{two:true})}</section>`;}
+ }
+ return h}
+function adminBoard(){const rows=DEPTS.map(d=>{const a=S.tickets.filter(t=>(t.dept===d.id)&&ACTIVE.includes(t.status));const n=s=>a.filter(t=>s.includes(t.status)).length;const od=a.filter(overdue).length;const f=x=>x?x:`<span class="zero">0</span>`;
+  return `<tr data-act="goto" data-go="dept:${d.id}"><td><span style="display:inline-flex;align-items:center;gap:8px">${deptIco(d.id,'sm')}${esc(d.name)}</span></td><td class="n">${f(n(['new']))}</td><td class="n">${f(n(['accepted','working','waiting']))}</td><td class="n">${f(n(['done']))}</td><td class="n">${od?`<span class="hotn">${od}</span>`:f(0)}</td></tr>`}).join('');
+ return `<section class="sec"><div class="sech"><h2>ภาพรวมรายแผนก</h2><span class="cnt">งานที่ยังไม่ปิด</span></div><div class="tablewrap"><table><thead><tr><th>แผนก</th><th class="n">รอรับ</th><th class="n">ดำเนินการ</th><th class="n">รอตรวจรับ</th><th class="n">เกินเวลา</th></tr></thead><tbody>${rows}</tbody></table></div></section>`}
+
+function viewNew(){if(S.dbState==='loading')return skeleton();const d=S.draft||(S.draft=newDraft());const dep=DM[d.dept];
+ if(!canWrite())return `<div class="banner">${I('alert')}<div>บัญชีนี้ยังส่งใบแจ้งซ่อมไม่ได้ ${S.uid?'เพราะมีสิทธิ์ดูอย่างเดียว ขอสิทธิ์ “โต้ตอบได้” จากผู้ดูแลระบบ':'เพราะระบบยังระบุตัวตนของคุณไม่ได้ ลองเข้าสู่ระบบแล้วเปิดหน้านี้ใหม่'}</div></div>`;
+ return `<div class="hello"><div><h1>แจ้งซ่อมใหม่</h1><p>กรอกให้ครบเท่าที่ทราบ ช่างจะได้รับแจ้งเตือนทันทีที่ส่ง</p></div></div>
+ <form class="card form" id="newform" autocomplete="off">
+ ${aiBox()}
+ <div class="field"><span class="lbl">1. แผนกที่ต้องการให้ซ่อม</span><div class="dgrid">${DEPTS.map(x=>`<button type="button" class="dtile" style="--c:${x.color}" aria-pressed="${d.dept===x.id}" data-act="dpick" data-dept="${x.id}">${deptIco(x.id)}<b>${esc(x.name)}</b></button>`).join('')}</div></div>
+ <div class="field"><label for="f_title">2. อาการ / ปัญหาที่พบ</label>${dep?`<div class="chips">${dep.quick.map(q=>`<button type="button" class="chip" data-act="quick" data-q="${esc(q)}">${esc(q)}</button>`).join('')}</div>`:''}<input class="inp" id="f_title" maxlength="120" placeholder="เช่น แอร์ไม่เย็น ห้องพักผู้ป่วย 305" value="${esc(d.title)}" required></div>
+ <div class="field"><label for="f_detail">รายละเอียดเพิ่มเติม <small>(ไม่บังคับ)</small></label><textarea class="inp" id="f_detail" maxlength="1500" placeholder="เกิดขึ้นตั้งแต่เมื่อไร มีผู้ป่วยใช้งานอยู่หรือไม่ ลองแก้อะไรไปแล้วบ้าง">${esc(d.detail)}</textarea></div>
+ <div class="field"><span class="lbl">3. ความเร่งด่วน</span><div class="seg">${Object.entries(URG).map(([k,u])=>`<button type="button" class="segb u-${k}" aria-pressed="${d.urgency===k}" data-act="upick" data-u="${k}"><span class="urg u-${k}"><i></i>${u.l}</span><small>${u.h}</small></button>`).join('')}</div></div>
+ <div class="row2"><div class="field"><label for="f_unit">4. หน่วยงานผู้แจ้ง</label><select class="inp" id="f_unit" required><option value="">เลือกหน่วยงาน</option>${UNITS.map(u=>`<option ${d.unit===u?'selected':''}>${esc(u)}</option>`).join('')}</select></div>
+ <div class="field"><label for="f_loc">สถานที่ <small>อาคาร / ชั้น / ห้อง / เตียง</small></label><input class="inp" id="f_loc" maxlength="120" placeholder="เช่น อาคารผู้ป่วยใน ชั้น 3 ห้อง 305" value="${esc(d.location)}" required></div></div>
+ <div class="row2"><div class="field"><label for="f_asset">เลขครุภัณฑ์ <small>(ถ้ามี)</small></label><input class="inp mono" id="f_asset" maxlength="60" placeholder="เช่น 6515-001-0012/65" value="${esc(d.asset)}"></div>
+ <div class="field"><label for="f_ext">เบอร์ติดต่อกลับ</label><input class="inp num" id="f_ext" maxlength="30" inputmode="tel" placeholder="เบอร์ภายใน เช่น 1204" value="${esc(d.ext)}"></div></div>
+ ${dupeBox(d)}
+ <div class="field"><span class="lbl">รูปภาพประกอบ <small>(สูงสุด 3 รูป ช่วยให้ช่างเตรียมอุปกรณ์ได้ถูก)</small></span><div class="photos">${d.photos.map((p,i)=>`<div class="ph"><img src="${p}" alt="รูปที่ ${i+1}"><button type="button" data-act="rmph" data-i="${i}" aria-label="ลบรูป">${I('x','sm')}</button></div>`).join('')}${d.photos.length<3?`<label class="addph">${I('camera')}<span>ถ่าย/เลือกรูป</span><input type="file" accept="image/*" id="f_photo" data-fresh></label>`:''}</div></div>
+ <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn pri" type="submit" ${S.busy?'disabled':''}>${I('send','sm')}ส่งใบแจ้งซ่อม</button><button class="btn" type="button" data-act="goto" data-go="home">ยกเลิก</button></div>
+ </form>`}
+
+function filtered(){const f=S.filter;const q=f.q.trim().toLowerCase();return S.tickets.filter(t=>{
+ if(f.st==='active'&&!ACTIVE.includes(t.status))return false;
+ if(f.st==='new'&&t.status!=='new')return false;
+ if(f.st==='work'&&!['accepted','working','waiting'].includes(t.status))return false;
+ if(f.st==='done'&&t.status!=='done')return false;
+ if(f.st==='closed'&&!['closed','cancelled'].includes(t.status))return false;
+ if(f.dept&&t.dept!==f.dept&&!(t.collab||[]).includes(f.dept))return false;
+ if(f.urg&&t.urgency!==f.urg)return false;
+ if(f.scope==='mine'&&t.createdBy!==S.uid&&t.assignee!==S.uid)return false;
+ if(f.scope==='dept'&&!inMyDept(t)&&!(me()?.unit&&t.unit===me().unit))return false;
+ if(q&&!(`${t.code} ${t.title} ${t.location} ${t.unit} ${t.asset||''} ${t.detail||''}`.toLowerCase().includes(q)))return false;
+ return true}).sort((a,b)=>f.st==='new'?byQueue(a,b):byNew(a,b))}
+function viewList(){if(!S.ticketsLoaded)return skeleton();const f=S.filter;const arr=filtered();
+ const sts=[['active','ยังไม่ปิด'],['new','รอรับงาน'],['work','กำลังดำเนินการ'],['done','รอตรวจรับ'],['closed','ปิด/ยกเลิก'],['all','ทั้งหมด']];
+ return `<div class="hello"><div><h1>ใบงานทั้งหมด</h1><p>ทุกแผนกเห็นใบงานเดียวกัน ค้นหาด้วยเลขใบงาน อาการ สถานที่ หรือเลขครุภัณฑ์</p></div></div>
+ <div class="filters"><div class="searchbox">${I('search')}<input class="inp" id="q" type="search" placeholder="ค้นหาใบงาน" value="${esc(f.q)}"></div>
+ <div class="chips">${sts.map(([k,l])=>`<button class="chip" aria-pressed="${f.st===k}" data-act="fst" data-v="${k}">${l}</button>`).join('')}</div>
+ <div class="frow"><select class="inp" id="fdept" data-act="fsel" aria-label="แผนก"><option value="">ทุกแผนก</option>${DEPTS.map(d=>`<option value="${d.id}" ${f.dept===d.id?'selected':''}>${esc(d.name)}</option>`).join('')}</select>
+ <select class="inp" id="furg" aria-label="ความเร่งด่วน"><option value="">ทุกระดับความเร่งด่วน</option>${Object.entries(URG).map(([k,u])=>`<option value="${k}" ${f.urg===k?'selected':''}>${u.l}</option>`).join('')}</select>
+ <select class="inp" id="fscope" aria-label="ขอบเขต"><option value="all" ${f.scope==='all'?'selected':''}>ทุกใบงาน</option><option value="mine" ${f.scope==='mine'?'selected':''}>ที่ฉันแจ้ง/รับผิดชอบ</option><option value="dept" ${f.scope==='dept'?'selected':''}>แผนก/หน่วยงานของฉัน</option></select></div></div>
+ <section class="sec"><div class="sech"><h2>${arr.length} ใบงาน</h2></div>${tlist(arr,'ไม่พบใบงานตามเงื่อนไขนี้',{two:true,accept:isStaff()})}</section>`}
+
+function viewDepts(){const techs=Object.entries(S.members).filter(([,m])=>m.role!=='requester');
+ return `<div class="hello"><div><h1>แผนกช่างซ่อมบำรุง</h1><p>รายชื่อผู้รับผิดชอบแต่ละแผนก จำนวนงานค้าง และช่องทางติดต่อภายใน</p></div></div>
+ <div class="dirgrid">${DEPTS.map(d=>{const a=S.tickets.filter(t=>t.dept===d.id&&ACTIVE.includes(t.status));const ppl=techs.filter(([,m])=>m.dept===d.id);
+ const closed=S.tickets.filter(t=>t.dept===d.id&&t.status==='closed'&&t.rating);const avg=closed.length?(closed.reduce((s,t)=>s+t.rating,0)/closed.length).toFixed(1):null;
+ return `<div class="dcard"><header>${deptIco(d.id)}<div><h3>${esc(d.name)}</h3><p>${esc(d.desc)}</p></div></header>
+ <div class="dstats"><span>รอรับ <b>${a.filter(t=>t.status==='new').length}</b></span><span>ดำเนินการ <b>${a.filter(t=>['accepted','working','waiting'].includes(t.status)).length}</b></span><span>เกินเวลา <b style="color:${a.some(overdue)?'var(--crit)':'inherit'}">${a.filter(overdue).length}</b></span>${avg?`<span>ความพึงพอใจ <b>${avg}</b>/5</span>`:''}</div>
+ <div class="people">${ppl.length?ppl.map(([id,m])=>`<div class="person">${av(id,'sm')}<span>${esc(nm(id))}${m.role==='admin'?' <span class="tag">หัวหน้า</span>':''}</span>${m.ext?`<span class="ext num">โทร ${esc(m.ext)}</span>`:''}</div>`).join(''):`<span style="color:var(--ink-3);font-size:13px">ยังไม่มีช่างลงทะเบียนในแผนกนี้</span>`}</div>
+ <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm pri" data-act="new" data-dept="${d.id}">${I('plus','sm')}แจ้งซ่อมแผนกนี้</button><button class="btn sm" data-act="goto" data-go="dept:${d.id}">ดูใบงาน</button></div></div>`}).join('')}</div>`}
+
+function viewNotif(){if(!S.uid)return `<div class="empty">เข้าสู่ระบบเพื่อดูการแจ้งเตือน</div>`;const list=notifs();
+ return `<div class="hello" style="justify-content:space-between"><div><h1>การแจ้งเตือน</h1><p>${me()?'อัปเดตจากใบงานที่คุณแจ้ง รับผิดชอบ หรืออยู่ในแผนกของคุณ':'ตั้งค่าโปรไฟล์เพื่อรับแจ้งเตือนตามแผนก'}</p></div></div>
+ ${list.length?`<div class="nlist">${list.map(({t,e})=>{const un=e.t>S.seenBase;return `<div class="nitem ${un?'unread':''}" data-act="open" data-id="${esc(t.id)}" tabindex="0">${e.kind==='comment'||e.kind==='create'?av(e.by):`<span class="sysdot" style="width:32px;height:32px">${I(KIND_ICON[e.kind]||'bell')}</span>`}<div class="nt">${eventText(t,e)}${e.text?`<div style="color:var(--ink-2)">“${esc(e.text.slice(0,140))}”</div>`:''}<small><span class="mono">${esc(t.code)}</span> · ${esc(t.title)} · ${esc(rel(e.t))}</small></div>${un?'<span class="ud"></span>':''}</div>`}).join('')}</div>`:`<div class="empty">ยังไม่มีการแจ้งเตือน</div>`}`}
+
+/* ---------- ticket sheet ---------- */
+function actionsFor(t){const m=me();if(!canWrite()||!m&&t.createdBy!==S.uid)return[];const A=[];const act=ACTIVE.includes(t.status);if(!act)return A;
+ const inD=inMyDept(t)||t.assignee===S.uid;const own=t.createdBy===S.uid;const adm=m?.role==='admin';
+ if(inD&&t.status==='new'&&m)A.push(['accept','รับงาน','check',1]);
+ if(inD&&t.status==='accepted')A.push(['start','เริ่มซ่อม','play',1]);
+ if(inD&&t.status==='waiting')A.push(['resume','ดำเนินการต่อ','play',1]);
+ if(inD&&['accepted','working','waiting'].includes(t.status))A.push(['done','ซ่อมเสร็จ','check',t.status==='working'?1:0]);
+ if(inD&&['accepted','working'].includes(t.status))A.push(['wait','รออะไหล่','pause',0]);
+ if(adm&&inD&&t.status!=='done')A.push(['assign','มอบหมายช่าง','user',0]);
+ if(inD&&t.status!=='done')A.push(['transfer','ส่งต่อแผนก','forward',0],['collab','ขอความร่วมมือ','link',0]);
+ if((own||adm)&&t.status==='done')A.push(['close','ตรวจรับ / ปิดงาน','star',1],['reopen','ยังไม่เรียบร้อย','undo',0]);
+ if((own||adm)&&t.status==='new')A.push(['cancel','ยกเลิกใบงาน','x',0]);
+ if(!own&&!inD&&t.status!=='done'&&!(t.followers||[]).includes(S.uid))A.push(['follow','ฉันพบปัญหานี้ด้วย','team',0]);
+ return A}
+function actionPanel(t){const a=S.action;if(!a)return '';const deptOpts=(excl)=>DEPTS.filter(d=>!excl.includes(d.id)).map(d=>`<option value="${d.id}">${esc(d.name)}</option>`).join('');
+ const P={
+  wait:['พักงานเพื่อรออะไหล่',`<div class="field"><label for="a_note">อะไหล่ที่รอ / คาดว่าจะได้เมื่อไร</label><textarea class="inp" id="a_note" placeholder="เช่น รอคอมเพรสเซอร์จากผู้แทนจำหน่าย ประมาณ 3 วัน"></textarea></div>`],
+  done:['บันทึกผลการซ่อม',`<div class="field"><label for="a_note">สิ่งที่ทำ / สาเหตุ</label><textarea class="inp" id="a_note" placeholder="เช่น เปลี่ยนคาปาซิเตอร์ ทดสอบเครื่องทำงานปกติ"></textarea></div>`],
+  transfer:['ส่งต่องานไปแผนกอื่น',`<div class="field"><label for="a_dept">ส่งไปที่</label><select class="inp" id="a_dept">${deptOpts([t.dept])}</select></div><div class="field"><label for="a_note">เหตุผล</label><textarea class="inp" id="a_note" placeholder="เช่น ตรวจแล้วเป็นปัญหาท่อก๊าซ ไม่ใช่ระบบไฟฟ้า"></textarea></div>`],
+  collab:['ขอความร่วมมือจากแผนกอื่น',`<div class="field"><label for="a_dept">แผนกที่ต้องการให้ช่วย</label><select class="inp" id="a_dept">${deptOpts([t.dept,...(t.collab||[])])}</select></div><div class="field"><label for="a_note">ต้องการให้ช่วยเรื่องอะไร</label><textarea class="inp" id="a_note" placeholder="เช่น ขอช่างไฟฟ้าตัดไฟวงจรห้อง 305 ก่อนเปลี่ยนแอร์"></textarea></div>`],
+  assign:['มอบหมายช่าง',(()=>{const c=Object.entries(S.members).filter(([,m])=>m.role!=='requester'&&(m.dept===t.dept||m.dept==='all'));return c.length?`<div class="field"><label for="a_who">ผู้รับผิดชอบ</label><select class="inp" id="a_who">${c.map(([id])=>`<option value="${esc(id)}" ${t.assignee===id?'selected':''}>${esc(nm(id))}</option>`).join('')}</select></div>`:`<p style="margin:0;color:var(--ink-2)">ยังไม่มีช่างลงทะเบียนใน${esc(dname(t.dept))}</p>`})()],
+  close:['ตรวจรับงานและให้คะแนน',`<div class="stars" role="radiogroup" aria-label="คะแนน">${[1,2,3,4,5].map(n=>`<button type="button" class="${(a.rating||0)>=n?'on':''}" data-act="rate" data-n="${n}" aria-label="${n} ดาว">${I('star')}</button>`).join('')}</div><div class="field"><label for="a_note">ความเห็นเพิ่มเติม <small>(ไม่บังคับ)</small></label><textarea class="inp" id="a_note" placeholder="เช่น ช่างมาไว บริการดี"></textarea></div>`],
+  reopen:['แจ้งว่ายังไม่เรียบร้อย',`<div class="field"><label for="a_note">ยังพบปัญหาอะไร</label><textarea class="inp" id="a_note"></textarea></div>`],
+  cancel:['ยกเลิกใบแจ้งซ่อม',`<div class="field"><label for="a_note">เหตุผลที่ยกเลิก</label><textarea class="inp" id="a_note" placeholder="เช่น แจ้งซ้ำ / แก้ไขได้เองแล้ว"></textarea></div>`]
+ }[a.type];if(!P)return '';
+ return `<div class="apanel"><h3>${P[0]}</h3>${P[1]}<div style="display:flex;gap:8px"><button class="btn pri" data-act="confirm" ${S.busy?'disabled':''}>ยืนยัน</button><button class="btn" data-act="cancelact">ปิด</button></div><p id="a_err" style="margin:0;color:var(--crit);font-size:13px"></p></div>`}
+function sheetTicket(){const t=S.tickets.find(x=>x.id===S.openId);if(!t)return `<div class="shead"><h2>ไม่พบใบงาน</h2><button class="iconbtn" data-act="close" aria-label="ปิด">${I('x')}</button></div>`;
+ const steps=[['new','แจ้งซ่อม'],['accepted','รับงาน'],['working','ซ่อม'],['done','เสร็จ'],['closed','ตรวจรับ']];const idx={new:0,accepted:1,working:2,waiting:2,done:3,closed:4,cancelled:-1}[t.status];
+ const acts=actionsFor(t);const log=(t.log||[]).slice().sort((a,b)=>a.t-b.t);
+ const tl=log.map(e=>{const mine=e.by===S.uid;const body=e.kind==='comment'?`<div class="bubble">${esc(e.text)}</div>`:(e.text?`<div class="bubble">${esc(e.text)}</div>`:'');
+  return `<div class="tle ${mine?'mine':''}">${e.kind==='comment'||e.kind==='create'?av(e.by,'sm'):`<span class="sysdot">${I(KIND_ICON[e.kind]||'bell')}</span>`}<div class="tlb"><span>${e.kind==='comment'?`<span class="who">${esc(nm(e.by,t.unit))}</span>`:eventText(t,e)}</span><time>${esc(rel(e.t))}</time>${body}</div></div>`}).join('');
+ const took=t.doneAt?dur(t.doneAt-t.createdAt):null;
+ return `<div class="shead"><span class="mono" style="color:var(--ink-3)">${esc(t.code)}</span>${statusPill(t.status)}<span class="grow"></span><button class="iconbtn" data-act="close" aria-label="ปิด">${I('x')}</button></div>
+ <div class="sbody">
+  <div style="display:flex;flex-direction:column;gap:8px"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">${urgTag(t.urgency)}${overdue(t)?`<span class="pill t-crit">${I('clock','sm')}เกินเวลารับงาน</span>`:''}${t.sample?'<span class="sample">ตัวอย่าง</span>':''}</div><h2 class="dtitle">${esc(t.title)}</h2>${t.detail?`<p style="margin:0;color:var(--ink-2);white-space:pre-wrap">${esc(t.detail)}</p>`:''}</div>
+  ${idx>=0?`<div class="steps">${steps.map(([k,l],i)=>`<div class="step ${i<=idx?'on':''} ${i===idx?'cur':''}"><i></i>${i===2&&t.status==='waiting'?'รออะไหล่':l}</div>`).join('')}</div>`:''}
+  <dl class="kv"><dt>แผนก</dt><dd style="display:flex;align-items:center;gap:8px">${deptIco(t.dept,'sm')}${esc(dname(t.dept))}</dd>
+  ${(t.collab||[]).length?`<dt>ร่วมงานกับ</dt><dd>${t.collab.map(c=>`<span class="tag">${I('link','sm')}${esc(dname(c))}</span>`).join(' ')}</dd>`:''}
+  <dt>สถานที่</dt><dd>${esc(t.location)}</dd><dt>หน่วยงาน</dt><dd>${esc(t.unit)}</dd>
+  <dt>ผู้แจ้ง</dt><dd>${esc(nm(t.createdBy,t.unit))}${t.ext?` · โทร <span class="num">${esc(t.ext)}</span>`:''}</dd>
+  ${t.asset?`<dt>เลขครุภัณฑ์</dt><dd class="mono">${esc(t.asset)}</dd>`:''}
+  <dt>ผู้รับผิดชอบ</dt><dd>${t.assignee?`<span style="display:inline-flex;align-items:center;gap:6px">${av(t.assignee,'sm')}${esc(nm(t.assignee))}${S.members[t.assignee]?.ext?` · โทร ${esc(S.members[t.assignee].ext)}`:''}</span>`:'<span style="color:var(--ink-3)">ยังไม่มีผู้รับงาน</span>'}</dd>
+  ${(t.followers||[]).length?`<dt>พบปัญหาเดียวกัน</dt><dd>${t.followers.length} คน · ${t.followers.map(f=>esc(nm(f))).join(', ')}</dd>`:''}
+  <dt>แจ้งเมื่อ</dt><dd>${esc(full(t.createdAt))}</dd>${took?`<dt>ใช้เวลาซ่อม</dt><dd>${esc(took)}</dd>`:''}${t.rating?`<dt>คะแนน</dt><dd>${'★'.repeat(t.rating)}${'☆'.repeat(5-t.rating)}</dd>`:''}</dl>
+  ${t.photoCount?(S.photoCache[t.id]?`<div class="photos">${S.photoCache[t.id].map((p,i)=>`<button class="ph" style="padding:0" data-act="zoom" data-i="${i}"><img src="${p}" alt="รูปประกอบ ${i+1}"></button>`).join('')}</div>`:`<div class="photos">${'<div class="ph skel" style="animation-duration:1.3s"></div>'.repeat(t.photoCount)}</div>`):''}
+  ${acts.length?`<div class="acts">${acts.map(([k,l,ic,pri])=>`<button class="btn sm ${pri?'pri':''}" data-act="do" data-a="${k}" ${S.busy?'disabled':''}>${I(ic,'sm')}${l}</button>`).join('')}</div>`:''}
+  ${actionPanel(t)}
+  <div class="sec"><div class="sech"><h2 style="font-size:16px">ความเคลื่อนไหวและข้อความ</h2></div><div class="tl">${tl}</div></div>
+ </div>
+ ${canWrite()&&ACTIVE.includes(t.status)?`<div class="sfoot"><textarea class="inp" id="cmt" rows="1" style="min-height:44px;max-height:120px" placeholder="พิมพ์ข้อความถึงผู้แจ้งและช่าง"></textarea><button class="btn pri" data-act="send" aria-label="ส่งข้อความ" style="height:44px">${I('send','sm')}</button></div>`:''}`}
+
+function sheetProfile(){const m=me()||{};const d=S.profDraft||(S.profDraft={name:m.name||'',role:m.role||'',unit:m.unit||'',dept:m.dept||'',ext:m.ext||''});
+ return `<div class="shead"><h2>โปรไฟล์และการตั้งค่า</h2><button class="iconbtn" data-act="close" aria-label="ปิด">${I('x')}</button></div>
+ <div class="sbody">${lineSection()}${profileFields(d)}
+ <div><button class="btn pri" data-act="saveprof" ${S.busy?'disabled':''}>${I('check','sm')}บันทึกโปรไฟล์</button><p id="p_err" style="margin:6px 0 0;color:var(--crit);font-size:13px"></p></div>
+ <hr style="border:0;border-top:1px solid var(--line);width:100%">
+ <label class="toggle"><input type="checkbox" id="p_sound" ${soundOn()?'checked':''}> เสียงเตือนเมื่อมีความเคลื่อนไหวใหม่</label>
+ <div class="sec"><div class="sech"><h2 style="font-size:16px;display:flex;gap:8px;align-items:center">${I('mobile')}ติดตั้งบนมือถือ</h2></div>
+ <div class="howto"><div><b>iPhone / iPad (Safari)</b><ol><li>เปิดลิงก์ระบบนี้ใน Safari</li><li>แตะปุ่มแชร์ (สี่เหลี่ยมมีลูกศรขึ้น)</li><li>เลือก “เพิ่มไปยังหน้าจอโฮม”</li></ol></div>
+ <div><b>Android (Chrome)</b><ol><li>เปิดลิงก์ระบบนี้ใน Chrome</li><li>แตะเมนู ⋮ มุมขวาบน</li><li>เลือก “เพิ่มลงในหน้าจอหลัก”</li></ol></div>
+ <div><b>การแจ้งเตือน</b><span style="color:var(--ink-2)">ระบบตรวจงานใหม่ทุก 20 วินาทีขณะเปิดหน้าไว้ มีป้ายเตือน เสียง และแถบแจ้งเตือน งานที่พลาดไปดูย้อนหลังได้ในเมนู “แจ้งเตือน”</span></div></div></div>
+ <div class="sec"><div class="sech"><h2 style="font-size:16px">เปลี่ยน PIN</h2></div><div class="row2">${pinInput('c_old','PIN เดิม')}<span></span>${pinInput('c_new','PIN ใหม่')}${pinInput('c_new2','ยืนยัน PIN ใหม่')}</div><div><button class="btn sm" data-act="chpin">บันทึก PIN ใหม่</button></div><p id="c_err" class="lerr" style="margin:0"></p></div>
+ ${me()?.role==='admin'?`<div class="sec"><div class="sech"><h2 style="font-size:16px">รีเซ็ต PIN ให้เจ้าหน้าที่</h2><span class="cnt">ใช้เมื่อมีคนลืม PIN</span></div><div class="frow"><select class="inp" id="r_who"><option value="">เลือกชื่อ</option>${Object.entries(S.members).filter(([id])=>id!==S.uid).sort((a,b)=>String(a[1].name).localeCompare(String(b[1].name),'th')).map(([id,m])=>`<option value="${esc(id)}">${esc(m.name)}</option>`).join('')}</select><button class="btn sm danger" data-act="rstpin">รีเซ็ต PIN</button></div><p id="r_err" class="lerr" style="margin:0"></p></div>`:''}
+ <div><button class="btn sm danger" data-act="logout">${I('undo','sm')}ออกจากระบบ</button></div>
+ </div>`}
+function profileFields(d){return `<div class="field"><label for="p_name">ชื่อ-นามสกุล</label><input class="inp" id="p_name" maxlength="80" placeholder="เช่น สมหญิง ใจดี" value="${esc(d.name||'')}"></div>
+ <div class="field"><span class="lbl">บทบาทของคุณ</span><div class="rolecards">${Object.entries(ROLES).map(([k,r])=>`<button class="rolec" aria-pressed="${d.role===k}" data-act="rpick" data-r="${k}"><span class="dico" style="--c:var(--brand)">${I(r.i)}</span><span><b>${r.l}</b><small>${r.d}</small></span></button>`).join('')}</div></div>
+ ${d.role==='requester'?`<div class="field"><label for="p_unit">หน่วยงานที่สังกัด</label><select class="inp" id="p_unit"><option value="">เลือกหน่วยงาน</option>${UNITS.map(u=>`<option ${d.unit===u?'selected':''}>${esc(u)}</option>`).join('')}</select></div>`:''}
+ ${d.role==='tech'||d.role==='admin'?`<div class="field"><label for="p_dept">แผนกช่างที่สังกัด</label><select class="inp" id="p_dept"><option value="">เลือกแผนก</option>${d.role==='admin'?`<option value="all" ${d.dept==='all'?'selected':''}>ทุกแผนก (ศูนย์ซ่อมบำรุง)</option>`:''}${DEPTS.map(x=>`<option value="${x.id}" ${d.dept===x.id?'selected':''}>${esc(x.name)}</option>`).join('')}</select><small style="color:var(--ink-3)">คุณจะได้รับแจ้งเตือนทุกงานที่เข้าแผนกนี้</small></div>`:''}
+ ${d.role?`<div class="field"><label for="p_ext">เบอร์โทรภายใน</label><input class="inp num" id="p_ext" maxlength="30" inputmode="tel" placeholder="เช่น 2231" value="${esc(d.ext||'')}"></div>`:''}`}
+/* ---------- render ---------- */
+const NAV=[['home','หน้าหลัก','home'],['list','ใบงาน','list'],['new','แจ้งซ่อม','plus'],['depts','แผนกช่าง','team'],['notif','แจ้งเตือน','bell']];
+function render(){try{renderInner()}catch(e){showFatal(e)}}
+function renderInner(){if(!S.authed){renderLogin();return}document.querySelector('.app').hidden=false;$('#login').hidden=true;const un=unreadCount();document.title=(un?`(${un}) `:'')+'ศูนย์แจ้งซ่อมโรงพยาบาล';const m=me();
+ const brand=`<div class="brand"><span class="mark">${I('cross')}</span><span><b>ศูนย์แจ้งซ่อม</b><small>ระบบแจ้งซ่อมภายในโรงพยาบาล</small></span></div>`;
+ const bdg=n=>n?`<span class="badge">${n>99?'99+':n}</span>`:'';
+ $('#side').innerHTML=`${brand}<button class="btn pri newbtn" data-act="new">${I('plus','sm')}แจ้งซ่อมใหม่</button>${[...NAV.filter(n=>n[0]!=='new'),...(isStaff()?[['report','รายงาน','chart']]:[])].map(([k,l,i])=>`<button class="navi" data-act="goto" data-go="${k}" ${S.view===k?'aria-current="page"':''}>${I(i)}${l}${k==='notif'?bdg(un):''}</button>`).join('')}
+ <button class="me" data-act="profile">${S.uid?av(S.uid):`<span class="av">${I('user','sm')}</span>`}<span><b>${esc(S.uid?nm(S.uid):'ผู้เยี่ยมชม')}</b><small>${m?esc(ROLES[m.role]?.l):'ตั้งค่าโปรไฟล์'}</small></span></button>`;
+ $('#tabs').innerHTML=NAV.map(([k,l,i])=>k==='new'?`<button class="tab fab" data-act="new"><span class="fabc">${I(i)}</span><em>${l}</em></button>`:`<button class="tab" data-act="goto" data-go="${k}" ${S.view===k?'aria-current="page"':''}>${I(i)}${l}${k==='notif'?bdg(un):''}</button>`).join('');
+ $('#top').innerHTML=`${brand}<span class="grow"></span><button class="iconbtn" data-act="goto" data-go="notif" aria-label="แจ้งเตือน">${I('bell')}${bdg(un)}</button><button class="avbtn" data-act="profile" aria-label="โปรไฟล์">${S.uid?av(S.uid):`<span class="av">${I('user','sm')}</span>`}</button>`;
+ let body='';
+ if(S.dbState==='none')body+=`<div class="banner">${I('alert')}<div>ระบบจัดเก็บข้อมูลยังไม่พร้อมในมุมมองนี้ ให้เปิดลิงก์ระบบจากบัญชีที่อยู่ในองค์กรเดียวกันเพื่อแจ้งซ่อมและรับแจ้งเตือน</div></div>`;
+ else if(S.dbState==='err')body+=`<div class="banner">${I('alert')}<div>การเชื่อมต่อข้อมูลขัดข้อง โหลดหน้านี้ใหม่อีกครั้ง</div></div>`;
+ body+=({home:viewHome,list:viewList,depts:viewDepts,notif:viewNotif,new:viewNew,report:viewReport}[S.view]||viewHome)();
+ patch($('#main'),body);
+ const open=!!S.sheet;$('#scrim').hidden=!open;$('#sheet').hidden=!open;document.body.style.overflow=open?'hidden':'';
+ if(open)patch($('#sheet'),S.sheet==='ticket'?sheetTicket():sheetProfile());
+ $('#lb').innerHTML=S.lightbox?`<div class="lightbox" data-act="unzoom"><img src="${S.lightbox}" alt="รูปขยาย"></div>`:'';
+}
+
+/* ---------- actions ---------- */
+function go(v){S.view=v;ls.set('view',v);if(v==='notif'){S.seenBase=S.lastSeen;markSeen()}render();scrollTo({top:0})}
+function markSeen(){S.lastSeen=Date.now();ls.set('lastSeen',S.lastSeen)}
+function openTicket(id){S.openId=id;S.sheet='ticket';S.action=null;render();loadPhotos(id)}
+async function loadPhotos(id){const t=S.tickets.find(x=>x.id===id);if(!t||!t.photoCount||S.photoCache[id])return;try{S.photoCache[id]=await call('photos',{id});render()}catch{}}
+function closeSheet(){if(S.sheet==='profile')S.profDraft=null;S.sheet=null;S.openId=null;S.action=null;render()}
+
+async function mutate(id,op,p={}){if(!canWrite())return false;S.busy=true;render();
+ try{const r=await call('mutate',{id,op,...p});upsert(r.ticket);(r.ticket.log||[]).forEach(e=>S.toasted.add(e.id));S.action=null;return true}
+ catch(e){if(String(e?.message||e).includes('AUTH')){forceRelogin('เซสชันหมดอายุ กรุณาใส่ PIN อีกครั้ง');return false}const m=errMsg(e);toast(m[0],m[1],null,'alert');if(String(e.message||e).includes('TAKEN'))sync(true);return false}
+ finally{S.busy=false;render()}}
+function upsert(t){const i=S.tickets.findIndex(x=>x.id===t.id);if(i>=0)S.tickets[i]=t;else S.tickets.unshift(t);S.tickets.sort((a,b)=>b.createdAt-a.createdAt)}
+function errMsg(e){const c=String(e?.message||e);if(c.includes('ACCESS'))return['รหัสเข้าใช้ระบบถูกเปลี่ยน','ออกจากระบบแล้วเข้าใหม่ด้วยรหัสล่าสุด'];if(c.includes('TAKEN'))return['งานนี้มีผู้รับไปแล้ว','ระบบอัปเดตข้อมูลล่าสุดให้แล้ว'];if(c.includes('BUSY'))return['ระบบกำลังบันทึกงานอื่นอยู่','รอสักครู่แล้วลองใหม่'];if(c.includes('NO_USER'))return['ไม่พบชื่อผู้ใช้ของคุณ','ออกจากระบบแล้วลงทะเบียนใหม่'];if(c.includes('CLOSED'))return['ใบงานนี้ปิดแล้ว','แก้ไขไม่ได้'];if(c.includes('FOLLOWING'))return['คุณติดตามใบงานนี้อยู่แล้ว','ไม่ต้องกดซ้ำ'];if(c.includes('NET')||c.includes('network'))return['เชื่อมต่อไม่ได้','ตรวจสอบอินเทอร์เน็ตแล้วลองใหม่'];return['บันทึกไม่สำเร็จ','ลองใหม่อีกครั้ง']}
+async function accept(id){await mutate(id,'accept')}
+function note(){return ($('#a_note')?.value||'').trim()}
+function aerr(m){const e=$('#a_err');if(e)e.textContent=m}
+async function confirmAction(){const t=S.tickets.find(x=>x.id===S.openId);const a=S.action;if(!t||!a)return;const n=note();
+ const need=['wait','done','transfer','collab','reopen','cancel'];if(need.includes(a.type)&&!n)return aerr('กรุณากรอกรายละเอียดก่อนยืนยัน');
+ if(a.type==='close'&&!a.rating)return aerr('กรุณาให้คะแนนก่อนปิดงาน');
+ const p={note:n};if(a.type==='transfer'||a.type==='collab')p.to=$('#a_dept').value;if(a.type==='assign'){p.to=$('#a_who')?.value;if(!p.to)return}if(a.type==='close')p.rating=a.rating;
+ await mutate(t.id,a.type,p)}
+async function doAction(k){const t=S.tickets.find(x=>x.id===S.openId);if(!t)return;
+ if(['accept','start','resume','follow'].includes(k)){const ok=await mutate(t.id,k);if(ok&&k==='follow')toast('บันทึกแล้วว่าคุณพบปัญหานี้ด้วย','คุณจะได้รับแจ้งเตือนเมื่อสถานะเปลี่ยน',null,'check');return}
+ S.action=S.action?.type===k?null:{type:k};render();setTimeout(()=>$('#sheet .apanel')?.scrollIntoView({block:'nearest',behavior:'smooth'}),30)}
+async function sendComment(){const el=$('#cmt');const v=(el?.value||'').trim();if(!v||!S.openId)return;el.value='';
+ const ok=await mutate(S.openId,'comment',{note:v.slice(0,1000)});if(!ok&&$('#cmt'))$('#cmt').value=v;
+ setTimeout(()=>{const b=$('#sheet .sbody');if(b)b.scrollTop=b.scrollHeight},50)}
+async function submitNew(){const d=S.draft;captureDraft();['title','detail','location','asset','ext'].forEach(k=>d[k]=(d[k]||'').trim());
+ const miss=[];if(!d.dept)miss.push('แผนก');if(!d.title)miss.push('อาการ');if(!d.unit)miss.push('หน่วยงาน');if(!d.location)miss.push('สถานที่');
+ if(miss.length)return toast('ยังกรอกไม่ครบ','ต้องระบุ: '+miss.join(', '),null,'alert');
+ S.busy=true;render();
+ try{const r=await call('create',{ticket:{title:d.title,detail:d.detail,dept:d.dept,unit:d.unit,location:d.location,asset:d.asset,ext:d.ext,urgency:d.urgency},photos:d.photos});
+  const t=r.ticket;upsert(t);t.log.forEach(e=>S.toasted.add(e.id));S.photoCache[t.id]=d.photos.slice();S.draft=null;S.view='home';ls.set('view','home');
+  toast(`ส่งใบแจ้งซ่อม ${t.code} แล้ว`,`${dname(t.dept)} ได้รับแจ้งเตือนแล้ว`,t.id,'check');S.busy=false;openTicket(t.id)}
+ catch(e){S.busy=false;if(String(e?.message||e).includes('AUTH'))return forceRelogin('เซสชันหมดอายุ กรุณาใส่ PIN อีกครั้ง แล้วส่งใบแจ้งซ่อมใหม่');render();const m=errMsg(e);toast('ส่งไม่สำเร็จ',m[1],null,'alert')}}
+function compress(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{const max=900;let {width:w,height:h}=img;const s=Math.min(1,max/Math.max(w,h));w=Math.round(w*s);h=Math.round(h*s);const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);let q=.7,u=c.toDataURL('image/jpeg',q);while(u.length>45000&&q>.25){q-=.1;u=c.toDataURL('image/jpeg',q)}res(u)};img.onerror=rej;img.src=r.result};r.onerror=rej;r.readAsDataURL(file)})}
+
+async function saveProfile(){const d=S.profDraft;d.name=($('#p_name')?.value||'').trim();d.unit=$('#p_unit')?.value||d.unit;d.dept=$('#p_dept')?.value||d.dept;d.ext=($('#p_ext')?.value||'').trim();
+ const err=m=>{const e=$('#p_err');if(e)e.textContent=m};
+ if(!d.name)return err('กรุณากรอกชื่อ-นามสกุล');if(!d.role)return err('กรุณาเลือกบทบาท');
+ if(d.role==='requester'&&!d.unit)return err('กรุณาเลือกหน่วยงาน');if(d.role!=='requester'&&!d.dept)return err('กรุณาเลือกแผนก');
+ const reg=!(S.authed&&S.uid&&S.members[S.uid]);const p1=pinVal('l_pin1'),p2=pinVal('l_pin2');if(reg){if(!isPin(p1))return err('ตั้ง PIN เป็นตัวเลข 4 หลัก');if(p1!==p2)return err('PIN ทั้งสองช่องไม่ตรงกัน')}
+ const body={name:d.name,role:d.role,unit:d.role==='requester'?d.unit:'',dept:d.role==='requester'?'':d.dept,ext:d.ext};
+ S.busy=true;render();
+ try{if(!reg){const r=await call('updateMember',{...body,uid:S.uid});S.members=r.members;S.profDraft=null;S.sheet=null;toast('บันทึกโปรไฟล์แล้ว',ROLES[d.role].l,null,'check')}
+  else{const r=await call('register',{...body,pin:p1});S.members=r.members;setSession(r.uid,r.token);S.sheet=null;S.busy=false;enter();toast('ลงทะเบียนเรียบร้อย','ยินดีต้อนรับสู่ระบบแจ้งซ่อม',null,'check')}}
+ catch(e){if(String(e?.message||e).includes('AUTH'))return forceRelogin('เซสชันหมดอายุ กรุณาใส่ PIN อีกครั้ง');err(errMsg(e)[0])}finally{S.busy=false;render()}}
+function clearSample(){}
+document.addEventListener('click',async e=>{const el=e.target.closest('[data-act]');if(!el)return;const a=el.dataset.act;
+ if(a==='sound'||a==='fsel')return;
+ if(el.tagName!=='INPUT'&&el.tagName!=='SELECT')e.preventDefault();
+ switch(a){
+  case 'goto':{const g=el.dataset.go;if(g.startsWith('list:')){const x=g.slice(5);S.filter={...S.filter,st:x==='mine'?'active':x,scope:x==='mine'?'mine':(isStaff()?'dept':'all'),dept:''};go('list')}else if(g.startsWith('dept:')){S.filter={q:'',st:'active',dept:g.slice(5),scope:'all',urg:''};go('list')}else go(g);break}
+  case 'new':S.draft=newDraft(el.dataset.dept);go('new');break;
+  case 'dpick':S.draft.dept=el.dataset.dept;render();break;
+  case 'upick':S.draft.urgency=el.dataset.u;render();break;
+  case 'quick':{const i=$('#f_title');if(i){i.value=el.dataset.q;i.focus()}break}
+  case 'rmph':S.draft.photos.splice(+el.dataset.i,1);render();break;
+  case 'open':openTicket(el.dataset.id);break;
+  case 'accept':e.stopPropagation();accept(el.dataset.id);break;
+  case 'close':closeSheet();break;
+  case 'do':doAction(el.dataset.a);break;
+  case 'cancelact':S.action=null;render();break;
+  case 'confirm':confirmAction();break;
+  case 'rate':S.action.rating=+el.dataset.n;render();break;
+  case 'send':sendComment();break;
+  case 'zoom':{const t=S.tickets.find(x=>x.id===S.openId);S.lightbox=S.photoCache[t?.id]?.[+el.dataset.i]||null;render();break}
+  case 'unzoom':S.lightbox=null;render();break;
+  case 'profile':S.sheet='profile';S.profDraft=null;render();break;
+  case 'rpick':S.profDraft.name=$('#p_name')?.value??S.profDraft.name;S.profDraft.unit=$('#p_unit')?.value||S.profDraft.unit;S.profDraft.dept=$('#p_dept')?.value||S.profDraft.dept;S.profDraft.ext=$('#p_ext')?.value??S.profDraft.ext;S.profDraft.role=el.dataset.r;if(el.dataset.r==='tech'&&S.profDraft.dept==='all')S.profDraft.dept='';render();break;
+  case 'saveprof':saveProfile();break;
+  case 'logout':logout();break;
+  case 'lsetpin':loginSetPin();break;
+  case 'llink':lineLink();break;
+  case 'lcheck':sync(true);break;
+  case 'lunlink':lineUnlink();break;
+  case 'ltest':call('lineTest').then(()=>toast('ส่งข้อความทดสอบแล้ว','เปิด LINE ดูแชทกับบอทแจ้งซ่อม',null,'check')).catch(e=>toast('ส่งไม่สำเร็จ',String(e?.message||e).includes('NOT_LINKED')?'บัญชีนี้ยังไม่ได้เชื่อม LINE':'ลองใหม่อีกครั้ง',null,'alert'));break;
+  case 'lhide':ls.set('lhide',true);render();break;
+  case 'dfollow':followDupe(el.dataset.id);break;
+  case 'chpin':changePin();break;
+  case 'rstpin':resetPin();break;
+  case 'lcode':loginCode();break;
+  case 'lmode':S.login.mode=el.dataset.m;S.login.err='';render();break;
+  case 'lpick':loginPick();break;
+  case 'refresh':sync(true);break;
+  case 'fst':S.filter.st=el.dataset.v;render();break;
+  case 'clearsample':clearSample();break;
+  case 'ai':runAI();break;
+  case 'aistop':S.aiCtl?.abort();break;
+  case 'xlsx':exportXlsx();break;
+ }});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(S.lightbox){S.lightbox=null;render()}else if(S.sheet)closeSheet()}
+ if(e.key==='Enter'&&e.target.matches('article[data-act],div[data-act][tabindex]')){e.preventDefault();e.target.click()}
+ if(e.key==='Enter'&&e.target.id==='cmt'&&!e.shiftKey){e.preventDefault();sendComment()}
+ if(e.key==='Enter'&&e.target.id==='l_code'){e.preventDefault();loginCode()}
+ if(e.key==='Enter'&&e.target.id==='l_pin'){e.preventDefault();loginPick()}});
+$('#scrim').addEventListener('click',closeSheet);
+document.addEventListener('submit',e=>{if(e.target.id==='newform'){e.preventDefault();submitNew()}});
+let dupT=null;document.addEventListener('input',e=>{const id=e.target.id;if(id==='q'){S.filter.q=e.target.value;render()}
+ if((id==='f_loc'||id==='f_asset'||id==='f_title')&&S.draft){S.draft[{f_loc:'location',f_asset:'asset',f_title:'title'}[id]]=e.target.value;clearTimeout(dupT);dupT=setTimeout(render,350)}});
+document.addEventListener('change',async e=>{const id=e.target.id;
+ if(id==='fdept'){S.filter.dept=e.target.value;render()}if(id==='furg'){S.filter.urg=e.target.value;render()}if(id==='fscope'){S.filter.scope=e.target.value;render()}if(id==='rmonth'){S.repMonth=e.target.value;render()}
+ if(id==='p_sound')ls.set('sound',e.target.checked);
+ if(id==='p_unit')S.profDraft.unit=e.target.value;if(id==='p_dept')S.profDraft.dept=e.target.value;
+ if(id==='f_photo'&&e.target.files?.[0]){const d=S.draft;captureDraft();
+  try{const u=await compress(e.target.files[0]);if(d.photos.length<3)d.photos.push(u);render()}catch{toast('เปิดรูปนี้ไม่ได้','ลองเลือกรูปอื่น',null,'alert')}}
+ if(id==='f_unit')S.draft.unit=e.target.value;});
+
+
+/* ---------- AI assist (sample) ---------- */
+function captureDraft(){const d=S.draft;if(!d)return;const g=id=>$('#'+id);const m={title:'f_title',detail:'f_detail',location:'f_loc',asset:'f_asset',ext:'f_ext',unit:'f_unit'};for(const k in m){const el=g(m[k]);if(el)d[k]=el.value}}
+function fillDom(){const d=S.draft;if(!d)return;const m={title:'f_title',detail:'f_detail',location:'f_loc',asset:'f_asset',ext:'f_ext',unit:'f_unit'};for(const k in m){const el=$('#'+m[k]);if(el)el.value=d[k]||''}}
+function aiBox(){if(!S.aiOn)return '';const a=S.ai||{};
+ return `<div class="aibox"><div class="aih"><span class="dico" style="--c:var(--violet)">${I('spark')}</span><div><b>ให้ AI ช่วยกรอก</b><small>เล่าปัญหาเหมือนพูดกับเพื่อนร่วมงาน ระบบจะเลือกแผนก ความเร่งด่วน และกรอกฟอร์มด้านล่างให้</small></div></div>
+ <textarea class="inp" id="f_ai" maxlength="1500" placeholder="เช่น ห้อง 305 ตึกผู้ป่วยใน ชั้น 3 แอร์มีน้ำหยดใส่เตียงคนไข้ตั้งแต่เช้า"></textarea>
+ <div class="airow"><button type="button" class="btn sm aibtn" data-act="ai" ${a.busy?'disabled':''}>${I('spark','sm')}${a.busy?'กำลังวิเคราะห์...':'ช่วยกรอกให้'}</button></div>
+ ${a.msg?`<p class="aimsg ${a.err?'err':''}">${esc(a.msg)}</p>`:''}</div>`}
+async function runAI(){const txt=($('#f_ai')?.value||'').trim();if(txt.length<4){S.ai={err:true,msg:'พิมพ์เล่าปัญหาสั้นๆ ก่อน แล้วกดอีกครั้ง'};render();return}
+ captureDraft();S.ai={busy:true};render();
+ const prompt=`คุณเป็นผู้ช่วยคัดแยกใบแจ้งซ่อมของโรงพยาบาลในประเทศไทย อ่านข้อความจากเจ้าหน้าที่ แล้วตอบเป็น JSON object เพียงตัวเดียว ไม่มีข้อความอื่น
+
+แผนกช่าง (ตอบด้วยค่า id):
+${DEPTS.map(d=>`- ${d.id}: ${d.name} (${d.desc})`).join('\n')}
+
+ความเร่งด่วน:
+- critical: กระทบผู้ป่วยหรือความปลอดภัยโดยตรง เช่น เครื่องช่วยหายใจ ออกซิเจน/ก๊าซทางการแพทย์ ไฟดับในห้องผ่าตัดหรือ ICU ไฟฟ้าช็อต น้ำท่วมใกล้อุปกรณ์ไฟฟ้า
+- urgent: กระทบการทำงานของหน่วยหรือความสะดวกของผู้ป่วย
+- normal: รอได้ ไม่กระทบผู้ป่วย
+
+หน่วยงาน (เลือกจากรายการนี้เท่านั้น หรือ "" ถ้าข้อความไม่ได้บอก): ${UNITS.join(', ')}
+
+รูปแบบคำตอบ:
+{"dept":"id","urgency":"critical|urgent|normal","title":"อาการสั้นๆ ไม่เกิน 60 ตัวอักษร","detail":"รายละเอียดที่เป็นประโยชน์ต่อช่าง เรียบเรียงจากข้อความ","location":"อาคาร/ชั้น/ห้อง/เตียงตามข้อความ หรือ \\"\\"","unit":"","asset":"เลขครุภัณฑ์ถ้ามี หรือ \\"\\"","reason":"เหตุผลสั้นๆ 1 ประโยคว่าทำไมเลือกแผนกและความเร่งด่วนนี้"}
+ห้ามแต่งข้อมูลที่ไม่มีในข้อความ
+
+ข้อความจากเจ้าหน้าที่:
+"""${txt}"""`;
+ let fill=false;
+ try{const r=await call('ai',{prompt});const d=S.draft;
+  if(!r||typeof r!=='object'||!DM[r.dept])throw {code:'invalid_json'};
+  d.dept=r.dept;if(URG[r.urgency])d.urgency=r.urgency;
+  const lim={title:120,detail:1500,location:120,asset:60};for(const k in lim){if(typeof r[k]==='string'&&r[k].trim())d[k]=r[k].trim().slice(0,lim[k])}
+  if(typeof r.unit==='string'&&UNITS.includes(r.unit))d.unit=r.unit;
+  S.ai={msg:`เลือก${dname(d.dept)} · ความเร่งด่วน “${URG[d.urgency].l}”${r.reason?` เพราะ${String(r.reason).replace(/^เพราะ/,'')}`:''} ตรวจสอบข้อมูลด้านล่างก่อนกดส่ง`};fill=true}
+ catch(e){const c=String(e?.code||e?.message||e);if(c.includes('AI_OFF')){S.aiOn=false;S.ai={}}
+  else S.ai={err:true,msg:c.includes('invalid_json')?'AI อ่านข้อความนี้ไม่ออก ลองเล่าเพิ่มว่าอะไรเสียและอยู่ที่ไหน':'AI ช่วยกรอกไม่สำเร็จ ลองอีกครั้ง หรือกรอกฟอร์มเองได้เลย'}}
+ render();if(fill){fillDom();$('#f_title')?.scrollIntoView({block:'center',behavior:'smooth'})}}
+
+/* ---------- monthly report ---------- */
+const evT=(t,k)=>{const e=(t.log||[]).find(e=>k.includes(e.kind));return e?e.t:null};
+const respAt=t=>t.acceptedAt||evT(t,['accept','assign']);
+const doneOf=t=>t.doneAt||evT(t,['done']);
+const mKey=ts=>{const d=new Date(ts);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')};
+const mLabel=k=>{const [y,m]=k.split('-').map(Number);return new Date(y,m-1,1).toLocaleDateString('th-TH',{month:'long',year:'numeric'})};
+const avgOf=a=>a.length?a.reduce((s,x)=>s+x,0)/a.length:null;
+function fmtDur(ms){if(ms==null)return '–';const m=ms/60000;if(m<60)return Math.round(m)+' นาที';const h=m/60;if(h<48)return h.toFixed(1)+' ชม.';return (h/24).toFixed(1)+' วัน'}
+function calc(list){const resp=[],rep=[];let slaN=0,slaOk=0;for(const t of list){const r=respAt(t);if(r&&r>t.createdAt){resp.push(r-t.createdAt);slaN++;if(r-t.createdAt<=(URG[t.urgency]?.sla||240)*60000)slaOk++}const d=doneOf(t);if(d&&d>t.createdAt&&['done','closed'].includes(t.status))rep.push(d-t.createdAt)}
+ const rated=list.filter(t=>t.rating).map(t=>t.rating);
+ return{n:list.length,fin:list.filter(t=>['done','closed'].includes(t.status)).length,open:list.filter(t=>['new','accepted','working','waiting'].includes(t.status)).length,cancel:list.filter(t=>t.status==='cancelled').length,
+  resp:avgOf(resp),rep:avgOf(rep),rating:avgOf(rated),rated:rated.length,sla:slaN?slaOk/slaN:null,overdue:list.filter(overdue).length}}
+function repData(){const months=[...new Set([mKey(Date.now()),...S.tickets.map(t=>mKey(t.createdAt))])].sort().reverse();const mk=months.includes(S.repMonth)?S.repMonth:months[0];
+ const list=S.tickets.filter(t=>mKey(t.createdAt)===mk);return{months,mk,list,all:calc(list),depts:DEPTS.map(d=>({d,...calc(list.filter(t=>t.dept===d.id))}))}}
+function tile(v,l,sub){return `<div class="stat rtile"><b>${v}</b><span>${l}</span>${sub?`<small>${sub}</small>`:''}</div>`}
+function dailyChart(mk,list){const [y,m]=mk.split('-').map(Number);const days=new Date(y,m,0).getDate();const c=Array(days).fill(0);list.forEach(t=>{c[new Date(t.createdAt).getDate()-1]++});
+ const mx=Math.max(...c);const top=Math.max(4,Math.ceil(mx/4)*4);const W=720,H=210,pl=30,pr=8,pt=10,pb=26;const cw=(W-pl-pr)/days;const bw=Math.max(4,cw-4);const y0=H-pb;const ys=v=>y0-(v/top)*(H-pt-pb);
+ const isNow=mKey(Date.now())===mk;const today=new Date().getDate();
+ let g='';[0,top/2,top].forEach(v=>{g+=`<line class="cgrid" x1="${pl}" x2="${W-pr}" y1="${ys(v)}" y2="${ys(v)}"/><text class="ctick" x="${pl-6}" y="${ys(v)+4}" text-anchor="end">${v}</text>`});
+ let b='';c.forEach((v,i)=>{const x=pl+i*cw+(cw-bw)/2;if(v){const h=y0-ys(v);const r=Math.min(3,h);b+=`<path class="cbar" d="M${x},${y0}V${ys(v)+r}Q${x},${ys(v)} ${x+r},${ys(v)}H${x+bw-r}Q${x+bw},${ys(v)} ${x+bw},${ys(v)+r}V${y0}Z"/>`}
+  if(i===0||(i+1)%5===0||i===days-1)b+=`<text class="ctick" x="${x+bw/2}" y="${H-8}" text-anchor="middle">${i+1}</text>`;
+  const future=isNow&&i+1>today;b+=`<rect class="chit" x="${pl+i*cw}" y="${pt}" width="${cw}" height="${y0-pt}" data-tip="${esc(`${i+1} ${mLabel(mk)}\n${future?'ยังไม่ถึงวันนี้':v+' ใบแจ้งซ่อม'}`)}"/>`});
+ return `<div class="chartwrap"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="จำนวนใบแจ้งซ่อมรายวัน ${esc(mLabel(mk))}">${g}<line class="caxis" x1="${pl}" x2="${W-pr}" y1="${y0}" y2="${y0}"/>${b}</svg></div>`}
+function deptBars(rows){const s=rows.filter(r=>r.n).sort((a,b)=>b.n-a.n);if(!s.length)return `<div class="empty">เดือนนี้ยังไม่มีใบแจ้งซ่อม</div>`;const mx=s[0].n;
+ return `<div class="hbars">${s.map(r=>`<div class="hrow" tabindex="0" data-tip="${esc(`${r.d.name}\nทั้งหมด ${r.n} · เสร็จ ${r.fin} · ค้าง ${r.open}\nรับงานเฉลี่ย ${fmtDur(r.resp)} · ซ่อมเฉลี่ย ${fmtDur(r.rep)}`)}"><span class="hl">${deptIco(r.d.id,'sm')}<span>${esc(r.d.name)}</span></span><span class="ht"><i style="width:${Math.max(2,r.n/mx*100)}%"></i></span><b class="num">${r.n}</b></div>`).join('')}</div>`}
+function viewReport(){if(!S.ticketsLoaded)return skeleton();
+ if(!isStaff())return `<div class="hello"><div><h1>รายงานประจำเดือน</h1><p>สำหรับช่างและหัวหน้างานซ่อมบำรุง</p></div></div><div class="empty">ตั้งค่าโปรไฟล์เป็นช่างหรือหัวหน้างานเพื่อดูรายงาน</div>`;
+ const R=repData();const a=R.all;const U=Object.keys(URG).map(k=>[k,R.list.filter(t=>t.urgency===k).length]);
+ const f=v=>v==null?'–':v;
+ return `<div class="hello rhead"><div><h1>รายงานประจำเดือน</h1><p>สรุปงานซ่อมบำรุงทุกแผนก นับจากวันที่แจ้งซ่อม</p></div><span class="grow"></span>
+ <div class="rctl"><select class="inp" id="rmonth" aria-label="เลือกเดือน">${R.months.map(k=>`<option value="${k}" ${k===R.mk?'selected':''}>${esc(mLabel(k))}</option>`).join('')}</select>${true?`<button class="btn pri" data-act="xlsx" ${S.xbusy?'disabled':''}>${I('download','sm')}${S.xbusy?'กำลังสร้างไฟล์...':'ดาวน์โหลด Excel'}</button>`:''}</div></div>
+ <div class="stats six">${tile(a.n,'ใบแจ้งซ่อมทั้งหมด',a.cancel?`ยกเลิก ${a.cancel}`:'')}${tile(a.fin,'ซ่อมเสร็จ',a.n?`${Math.round(a.fin/a.n*100)}% ของทั้งหมด · ค้าง ${a.open}`:'')}${tile(fmtDur(a.resp),'เวลารับงานเฉลี่ย','ตั้งแต่แจ้งจนช่างรับ')}${tile(fmtDur(a.rep),'เวลาซ่อมเฉลี่ย','ตั้งแต่แจ้งจนซ่อมเสร็จ')}${tile(a.sla==null?'–':Math.round(a.sla*100)+'%','รับงานทันเวลา','ตามเกณฑ์ความเร่งด่วน')}${tile(a.rating==null?'–':a.rating.toFixed(1)+'/5','ความพึงพอใจ',a.rated?`จาก ${a.rated} ใบงาน`:'ยังไม่มีการประเมิน')}</div>
+ <div class="rgrid"><section class="card sec"><div class="sech"><h2>จำนวนใบแจ้งซ่อมรายวัน</h2><span class="cnt">${esc(mLabel(R.mk))}</span></div>${dailyChart(R.mk,R.list)}
+  <div class="chips">${U.map(([k,n])=>`<span class="tag"><span class="urg u-${k}"><i></i>${URG[k].l}</span> <b class="num">${n}</b></span>`).join('')}</div></section>
+ <section class="card sec"><div class="sech"><h2>แยกตามแผนก</h2><span class="cnt">เรียงจากมากไปน้อย</span></div>${deptBars(R.depts)}</section></div>
+ <section class="sec"><div class="sech"><h2>ตัวชี้วัดรายแผนก</h2></div><div class="tablewrap"><table class="rtable"><thead><tr><th>แผนก</th><th class="n">ทั้งหมด</th><th class="n">เสร็จ</th><th class="n">ค้าง</th><th class="n">รับงานเฉลี่ย</th><th class="n">ซ่อมเฉลี่ย</th><th class="n">ทันเวลา</th><th class="n">คะแนน</th></tr></thead><tbody>
+ ${R.depts.map(r=>`<tr data-act="goto" data-go="dept:${r.d.id}"><td><span style="display:inline-flex;align-items:center;gap:8px">${deptIco(r.d.id,'sm')}${esc(r.d.name)}</span></td><td class="n">${r.n||'<span class="zero">0</span>'}</td><td class="n">${r.fin}</td><td class="n">${r.open}</td><td class="n">${fmtDur(r.resp)}</td><td class="n">${fmtDur(r.rep)}</td><td class="n">${r.sla==null?'–':Math.round(r.sla*100)+'%'}</td><td class="n">${r.rating==null?'–':r.rating.toFixed(1)}</td></tr>`).join('')}
+ </tbody></table></div></section>`}
+async function loadXLSX(){if(window.XLSX)return window.XLSX;await new Promise((res,rej)=>{const s=document.createElement('script');s.src='https:\/\/cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';s.onload=res;s.onerror=rej;document.head.appendChild(s)});return window.XLSX}
+async function exportXlsx(){if(S.xbusy)return;S.xbusy=true;render();
+ try{const X=await loadXLSX();const R=repData();const min=ms=>ms==null?'':Math.round(ms/60000);const hr=ms=>ms==null?'':Math.round(ms/360000)/10;
+  const s1=[[`รายงานแจ้งซ่อมประจำเดือน ${mLabel(R.mk)}`],[],['แผนก','ทั้งหมด','ซ่อมเสร็จ','ค้างดำเนินการ','ยกเลิก','รับงานเฉลี่ย (นาที)','ซ่อมเฉลี่ย (ชม.)','รับงานทันเวลา (%)','คะแนนเฉลี่ย (เต็ม 5)','จำนวนที่ประเมิน']];
+  const row=(name,r)=>[name,r.n,r.fin,r.open,r.cancel,min(r.resp),hr(r.rep),r.sla==null?'':Math.round(r.sla*100),r.rating==null?'':Math.round(r.rating*10)/10,r.rated];
+  R.depts.forEach(r=>s1.push(row(r.d.name,r)));s1.push(row('รวมทุกแผนก',R.all));
+  const s2=[['เลขใบงาน','วันที่แจ้ง','แผนก','หน่วยงาน','สถานที่','อาการ','ความเร่งด่วน','สถานะ','ผู้รับผิดชอบ','เลขครุภัณฑ์','รับงานใน (นาที)','ซ่อมเสร็จใน (ชม.)','คะแนน','ร่วมงานกับ']];
+  R.list.slice().sort((a,b)=>a.createdAt-b.createdAt).forEach(t=>{const r=respAt(t),d=doneOf(t);s2.push([t.code,new Date(t.createdAt).toLocaleString('th-TH'),dname(t.dept),t.unit,t.location,t.title,URG[t.urgency]?.l||'',STATUS[t.status]?.l||t.status,t.assignee?nm(t.assignee).replace(' (คุณ)',''):'',t.asset||'',r?min(r-t.createdAt):'',d&&['done','closed'].includes(t.status)?hr(d-t.createdAt):'',t.rating||'',(t.collab||[]).map(dname).join(', ')])});
+  const wb=X.utils.book_new();const w1=X.utils.aoa_to_sheet(s1);w1['!cols']=[{wch:30},...Array(9).fill({wch:14})];const w2=X.utils.aoa_to_sheet(s2);w2['!cols']=[{wch:16},{wch:20},{wch:26},{wch:22},{wch:30},{wch:36},{wch:10},{wch:12},{wch:20},{wch:18},{wch:12},{wch:12},{wch:8},{wch:24}];
+  X.utils.book_append_sheet(wb,w1,'สรุปรายแผนก');X.utils.book_append_sheet(wb,w2,'รายการใบงาน');
+  const buf=X.write(wb,{bookType:'xlsx',type:'array'});saveFile(`รายงานแจ้งซ่อม-${R.mk}.xlsx`,buf);toast('ดาวน์โหลดรายงานแล้ว',mLabel(R.mk),null,'check')}
+ catch(e){if(e?.code!=='declined')toast('สร้างไฟล์ Excel ไม่สำเร็จ',e?.code==='rate_limited'?'มีหน้าต่างยืนยันเปิดค้างอยู่':'ลองใหม่อีกครั้ง',null,'alert')}
+ finally{S.xbusy=false;render()}}
+
+/* tooltip */
+(function(){const tip=document.createElement('div');tip.className='ctip';tip.hidden=true;document.body.appendChild(tip);
+ const show=(el,x,y)=>{tip.textContent=el.dataset.tip;tip.hidden=false;const r=tip.getBoundingClientRect();let L=x+14,T=y+14;if(L+r.width>innerWidth-8)L=x-r.width-14;if(T+r.height>innerHeight-8)T=y-r.height-14;tip.style.left=Math.max(8,L)+'px';tip.style.top=Math.max(8,T)+'px';document.querySelectorAll('.hot-tip').forEach(n=>n.classList.remove('hot-tip'));el.classList.add('hot-tip')};
+ const hide=()=>{tip.hidden=true;document.querySelectorAll('.hot-tip').forEach(n=>n.classList.remove('hot-tip'))};
+ document.addEventListener('pointermove',e=>{const el=e.target.closest?.('[data-tip]');if(el)show(el,e.clientX,e.clientY);else if(!tip.hidden)hide()});
+ document.addEventListener('focusin',e=>{const el=e.target.closest?.('[data-tip]');if(el){const r=el.getBoundingClientRect();show(el,r.left+20,r.top+r.height/2)}});
+ document.addEventListener('focusout',hide);addEventListener('scroll',hide,{passive:true})})();
+
+/* ---------- duplicate check ---------- */
+const locTok=s=>(String(s||'').toLowerCase().match(/[0-9]+[a-z]?|[a-z]{2,}|[฀-๿]{2,}/g)||[]).filter(w=>!['อาคาร','ตึก','ชั้น','ห้อง','เตียง','โซน'].includes(w));
+function findDupes(d){if(!d||!d.dept)return[];const loc=locTok(d.location),nums=loc.filter(w=>/^[0-9]/.test(w));const asset=String(d.asset||'').trim().toLowerCase();const since=Date.now()-14*864e5;
+ return S.tickets.filter(t=>t.dept===d.dept&&['new','accepted','working','waiting'].includes(t.status)&&t.createdAt>since).map(t=>{let sc=0;
+  if(asset&&String(t.asset||'').trim().toLowerCase()===asset)sc+=3;const tl=locTok(t.location);const shared=loc.filter(w=>tl.includes(w));
+  if(shared.some(w=>/^[0-9]/.test(w)))sc+=2;if(shared.length>=2)sc+=1;if(nums.length&&tl.filter(w=>/^[0-9]/.test(w)).length&&!shared.some(w=>/^[0-9]/.test(w)))sc-=2;
+  const tt=locTok(d.title),ttl=locTok(t.title);if(tt.some(w=>ttl.includes(w)))sc+=1;return{t,sc}}).filter(x=>x.sc>=2).sort((a,b)=>b.sc-a.sc).slice(0,3).map(x=>x.t)}
+function dupeBox(d){const list=findDupes(d);if(!list.length)return '';
+ return `<div class="dupe">${I('alert')}<div class="dupe-b"><b>อาจมีคนแจ้งเรื่องนี้แล้ว</b><small>ถ้าเป็นปัญหาเดียวกัน กด “ฉันพบปัญหานี้ด้วย” แทนการแจ้งใหม่ ช่างจะรู้ว่ามีผู้ได้รับผลกระทบเพิ่ม และคุณจะได้รับแจ้งเตือนเมื่อสถานะเปลี่ยน</small>
+ ${list.map(t=>{const mine=t.createdBy===S.uid||(t.followers||[]).includes(S.uid);return `<div class="dupe-i"><div><span class="mono" style="color:var(--ink-3)">${esc(t.code)}</span> ${statusPill(t.status)}<div class="dupe-t">${esc(t.title)}</div><small>${esc(t.location)} · ${esc(rel(t.createdAt))}${(t.followers||[]).length?` · พบปัญหาเดียวกัน ${t.followers.length} คน`:''}</small></div><div class="dupe-a"><button type="button" class="btn sm" data-act="open" data-id="${esc(t.id)}">ดูใบงาน</button>${mine?'<span class="tag">คุณติดตามอยู่แล้ว</span>':`<button type="button" class="btn sm pri" data-act="dfollow" data-id="${esc(t.id)}">ฉันพบปัญหานี้ด้วย</button>`}</div></div>`}).join('')}
+ <small>ถ้าเป็นคนละเรื่อง กรอกฟอร์มต่อแล้วกดส่งได้ตามปกติ</small></div></div>`}
+async function followDupe(id){const ok=await mutate(id,'follow');if(ok){S.draft=null;S.view='home';ls.set('view','home');toast('บันทึกแล้วว่าคุณพบปัญหานี้ด้วย','ไม่ต้องแจ้งซ้ำ คุณจะได้รับแจ้งเตือนเมื่อสถานะเปลี่ยน',id,'check');render()}}
+
+/* ---------- personal LINE ---------- */
+// ห้ามมีเครื่องหมายทับสองตัวติดกันในข้อความของหน้าเว็บ Google Apps Script จะตัดทิ้งเหมือนคอมเมนต์
+const LINE_ADD='https:\/\/line.me/R/ti/p/';
+function lineSection(){if(!S.lineOn)return '';const m=me();if(!m)return '';
+ const head=`<div class="sech"><h2 style="font-size:16px;display:flex;gap:8px;align-items:center">${I('chat')}แจ้งเตือนทาง LINE ส่วนตัว</h2></div>`;
+ if(m.line)return `<div class="sec">${head}<div class="lineok">${I('check','sm')}<span>เชื่อม LINE แล้ว คุณจะได้รับแจ้งทันทีเมื่อใบแจ้งซ่อมที่คุณแจ้งหรือติดตาม${isStaff()?' และงานที่คุณรับผิดชอบ':''}มีความคืบหน้า</span></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm pri" data-act="ltest">ส่งข้อความทดสอบถึงฉัน</button><button class="btn sm" data-act="lunlink">ยกเลิกการเชื่อม LINE</button></div></div>`;
+ const L=S.lineLink;
+ return `<div class="sec">${head}<p style="margin:0;color:var(--ink-2);font-size:14px">รับข้อความใน LINE ทุกครั้งที่ใบแจ้งซ่อมของคุณเปลี่ยนขั้นตอน: รับงาน → ซ่อม → เสร็จ → ปิดงาน</p>
+ ${L?`<div class="linkbox"><ol><li>เพิ่มเพื่อน LINE ${L.bot?`<a href="${LINE_ADD}${esc(L.bot)}" target="_blank" rel="noopener"><b>${esc(L.bot)}</b></a> (แตะเพื่อเปิด LINE)`:'บัญชีบอทแจ้งซ่อมของโรงพยาบาล'}</li><li>ส่งรหัสนี้ในแชทกับบอท</li></ol><div class="bigcode num">${esc(L.code)}</div><small>รหัสใช้ได้ 15 นาที · เมื่อบอทตอบว่า “เชื่อม LINE แล้ว” หน้านี้จะอัปเดตเอง</small><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm" data-act="lcheck">ตรวจสอบอีกครั้ง</button><button class="btn sm" data-act="llink">ขอรหัสใหม่</button></div></div>`:`<div><button class="btn sm pri" data-act="llink" ${S.busy?'disabled':''}>${I('chat','sm')}เชื่อม LINE ส่วนตัว</button></div>`}</div>`}
+async function lineLink(){S.busy=true;render();try{S.lineLink=await call('lineLinkCode');if(!S.lineLinkTimer)S.lineLinkTimer=setInterval(()=>{if(S.lineLink)sync(true);else{clearInterval(S.lineLinkTimer);S.lineLinkTimer=null}},6000)}catch(e){toast('ขอรหัสไม่สำเร็จ',String(e?.message||e).includes('LINE_OFF')?'ผู้ดูแลยังไม่ได้ตั้งค่า LINE':'ลองใหม่อีกครั้ง',null,'alert')}finally{S.busy=false;render()}}
+function lineLinkedCheck(){if(S.lineLink&&me()?.line){S.lineLink=null;toast('เชื่อม LINE เรียบร้อย','จะแจ้งความคืบหน้าผ่าน LINE ทุกขั้นตอน',null,'check');render()}}
+async function lineUnlink(){try{const r=await call('lineUnlink');S.members=r.members;toast('ยกเลิกการเชื่อม LINE แล้ว','',null,'check');render()}catch(e){toast('ทำรายการไม่สำเร็จ','ลองใหม่อีกครั้ง',null,'alert')}}
+
+/* ---------- server link (Google Apps Script) ---------- */
+/* เรียก Apps Script ผ่าน LIFF: ส่ง LINE ID token ไปยืนยันตัวตนทุกครั้ง */
+function liffReauth(){let last=0;try{last=+sessionStorage.getItem('mr.reauth')||0}catch{}
+ if(Date.now()-last<60000){showFatal('เซสชัน LINE หมดอายุ กรุณาปิดหน้านี้แล้วเปิดใหม่จากเมนู LINE');return}
+ try{sessionStorage.setItem('mr.reauth',String(Date.now()))}catch{}
+ try{liff.logout()}catch{}
+ if(liff.isInClient())location.reload();else liff.login({redirectUri:location.href})}
+function liffToken(){const t=liff.getIDToken(),d=liff.getDecodedIDToken();if(!t||!d||d.exp*1000<Date.now()+60000){liffReauth();throw new Error('NET')}return t}
+async function call(action,p={}){const req={code:S.code,uid:S.uid,token:S.token,...p,action};let res,d;
+ try{res=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({liff:1,idToken:liffToken(),req}),redirect:'follow'})}catch(e){throw new Error('NET')}
+ try{d=await res.json()}catch(e){throw new Error('NET')}
+ if(!d.ok){const m=String(d.error||'NET');if(m.includes('LIFF_AUTH'))liffReauth();if(m.includes('LIFF_OFF'))showFatal('ยังไม่ได้ใส่ LIFF_ID ในแท็บ "ตั้งค่า" ของ Google Sheet');throw new Error(m)}
+ return d.data}
+function applyData(r){Object.values(r.members||{}).forEach(m=>{m.name=String(m.name??'');m.unit=String(m.unit??'');m.ext=String(m.ext??'')});setTimeout(lineLinkedCheck,0);const first=!S.ticketsLoaded;S.members=r.members||{};S.tickets=(r.tickets||[]).sort((a,b)=>b.createdAt-a.createdAt);S.ver=r.ver;S.ticketsLoaded=true;S.membersLoaded=true;S.dbState='ok';if(!first&&S.authed)checkNew()}
+let syncing=false,timer=null;
+async function sync(force){if(syncing||(!S.code&&!S.liffLinked))return;syncing=true;
+ try{const r=await call('sync',{ver:force?0:S.ver});if(!r.same){applyData(r);if(S.uid&&!S.members[S.uid]&&S.authed){S.authed=false;S.login={step:'who',mode:'new',err:'ไม่พบชื่อของคุณในระบบแล้ว กรุณาลงทะเบียนใหม่'}}render()}else if(S.dbState!=='ok'){S.dbState='ok';render()}}
+ catch(e){if(String(e?.message||e).includes('ACCESS')){S.authed=false;S.code='';ls.set('code','');S.login={step:'code',mode:'new',err:'รหัสเข้าใช้ระบบถูกเปลี่ยน กรุณาใส่รหัสใหม่'};stopPolling()}else S.dbState='err';render()}
+ finally{syncing=false}}
+function startPolling(){stopPolling();timer=setInterval(()=>{if(document.visibilityState==='visible')sync()},20000)}
+function stopPolling(){if(timer)clearInterval(timer);timer=null}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&S.authed)sync()});
+function saveFile(name,buf){const blob=new Blob([buf],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},3000)}
+
+/* ---------- login + PIN ---------- */
+const pinInput=(id,label,auto)=>`<div class="field"><label for="${id}">${label}</label><input class="inp num lcode" id="${id}" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" placeholder="••••" ${auto?'autofocus':''}></div>`;
+const pinVal=id=>($('#'+id)?.value||'').trim();
+const isPin=v=>/^\d{4}$/.test(v);
+function renderLogin(){document.querySelector('.app').hidden=true;$('#scrim').hidden=true;$('#sheet').hidden=true;const L=S.login;const el=$('#login');el.hidden=false;
+ let h=`<div class="lcard"><div class="brand"><span class="mark">${I('cross')}</span><span><b>ศูนย์แจ้งซ่อม</b><small>ระบบแจ้งซ่อมภายในโรงพยาบาล</small></span></div>`;
+ const bz=S.busy?'disabled':'';
+ if(L.step==='loading')h+=`<div class="skel" style="height:120px"></div><p class="lmuted">กำลังเชื่อมต่อระบบ...</p>`;
+ else if(L.step==='code')h+=`<div><h1>เข้าสู่ระบบ</h1><p class="lmuted">ใส่รหัสเข้าใช้ระบบที่ได้รับจากหัวหน้างานซ่อมบำรุง (ครั้งแรกครั้งเดียว หลังจากนั้นเปิดจาก LINE ได้ทันที)</p></div><div class="field"><label for="l_code">รหัสเข้าใช้ระบบ</label><input class="inp num lcode" id="l_code" inputmode="numeric" autocomplete="off" maxlength="20" placeholder="••••••"></div><button class="btn pri block" data-act="lcode" ${bz}>${S.busy?'กำลังตรวจสอบ...':'ถัดไป'}</button>`;
+ else if(L.step==='setpin'){const m=S.members[L.who]||{};h+=`<div><h1>ตั้ง PIN ใหม่</h1><p class="lmuted">${esc(m.name||'')} · ตั้ง PIN ตัวเลข 4 หลักไว้ใช้เข้าสู่ระบบครั้งต่อไป</p></div>${pinInput('l_pin1','PIN ใหม่ 4 หลัก',1)}${pinInput('l_pin2','ยืนยัน PIN อีกครั้ง')}<button class="btn pri block" data-act="lsetpin" ${bz}>${S.busy?'กำลังบันทึก...':'ตั้ง PIN และเข้าใช้งาน'}</button><button class="btn block" data-act="lmode" data-m="pick">ย้อนกลับ</button>`}
+ else{const names=Object.entries(S.members).sort((a,b)=>String(a[1].name).localeCompare(String(b[1].name),'th'));const mode=names.length?L.mode:'new';
+  h+=`<div><h1>${mode==='pick'?'เข้าสู่ระบบด้วย PIN':'ลงทะเบียนครั้งแรก'}</h1><p class="lmuted">${mode==='pick'?'เลือกชื่อของคุณ แล้วใส่ PIN 4 หลัก':'กรอกข้อมูลและตั้ง PIN 4 หลักสำหรับเข้าสู่ระบบ'}</p></div>${names.length?`<div class="chips"><button class="chip" aria-pressed="${mode==='pick'}" data-act="lmode" data-m="pick">เคยลงทะเบียนแล้ว</button><button class="chip" aria-pressed="${mode==='new'}" data-act="lmode" data-m="new">ลงทะเบียนครั้งแรก</button></div>`:''}`;
+  if(mode==='pick')h+=`<div class="field"><label for="l_who">ชื่อของคุณ</label><select class="inp" id="l_who"><option value="">เลือกชื่อ</option>${names.map(([id,m])=>`<option value="${esc(id)}" ${L.who===id?'selected':''}>${esc(m.name)} · ${esc(m.role==='requester'?m.unit:dname(m.dept))}</option>`).join('')}</select></div>${pinInput('l_pin','PIN 4 หลัก')}<button class="btn pri block" data-act="lpick" ${bz}>${S.busy?'กำลังตรวจสอบ...':'เข้าใช้งาน'}</button><p class="lmuted" style="font-size:12.5px">ลืม PIN? แจ้งหัวหน้างานซ่อมบำรุงให้รีเซ็ต แล้วตั้ง PIN ใหม่ได้ทันที</p>`;
+  else{const d=S.profDraft||(S.profDraft={name:'',role:'',unit:'',dept:'',ext:''});h+=profileFields(d)+pinInput('l_pin1','ตั้ง PIN 4 หลัก')+pinInput('l_pin2','ยืนยัน PIN อีกครั้ง')+`<button class="btn pri block" data-act="saveprof" ${bz}>${S.busy?'กำลังบันทึก...':'ลงทะเบียนและเข้าใช้งาน'}</button><p id="p_err" class="lerr"></p>`}}
+ if(L.err)h+=`<p class="lerr">${esc(L.err)}</p>`;
+ patch(el,h+'</div>')}
+function authErr(e){const c=String(e?.message||e);if(c.includes('LOCKED'))return 'ใส่ PIN ผิดหลายครั้ง ระบบล็อกชื่อนี้ไว้ 15 นาที';const w=c.match(/WRONG_PIN:(\d+)/);if(w)return `PIN ไม่ถูกต้อง ลองได้อีก ${w[1]} ครั้ง`;if(c.includes('BAD_PIN'))return 'PIN ต้องเป็นตัวเลข 4 หลัก';if(c.includes('ACCESS'))return 'รหัสเข้าใช้ระบบถูกเปลี่ยน';return 'เชื่อมต่อระบบไม่ได้ ลองใหม่อีกครั้ง'}
+async function loginCode(){const c=($('#l_code')?.value||'').trim();if(!c){S.login.err='กรุณาใส่รหัสเข้าใช้ระบบ';render();return}
+ S.code=c;S.busy=true;S.login.err='';render();
+ try{const r=await call('boot');ls.set('code',c);applyData(r);S.aiOn=!!r.ai;S.lineOn=!!r.line;if(r.authOk&&S.members[S.uid])enter();else S.login={step:'who',mode:Object.keys(S.members).length?'pick':'new'}}
+ catch(e){S.code='';S.login.err=String(e?.message||e).includes('ACCESS')?'รหัสไม่ถูกต้อง ตรวจสอบกับหัวหน้างานอีกครั้ง':'เชื่อมต่อระบบไม่ได้ ลองใหม่อีกครั้ง'}
+ finally{S.busy=false;render()}}
+function setSession(uid,token){S.uid=uid;S.token=token;ls.set('uid',uid);ls.set('token',token)}
+function enter(){S.authed=true;if(!S.lastSeen){S.lastSeen=Date.now();S.seenBase=S.lastSeen;ls.set('lastSeen',S.lastSeen)}S.login={step:'code',mode:'new'};S.profDraft=null;S.bootAt=Date.now();startPolling()}
+async function loginPick(){const id=$('#l_who')?.value;const pin=pinVal('l_pin');S.login.who=id;
+ if(!id){S.login.err='กรุณาเลือกชื่อของคุณ';render();return}if(!isPin(pin)){S.login.err='กรุณาใส่ PIN ตัวเลข 4 หลัก';render();return}
+ S.busy=true;S.login.err='';render();
+ try{const r=await call('login',{uid:id,pin});setSession(id,r.token);S.busy=false;enter()}
+ catch(e){if(String(e?.message||e).includes('NEED_SET')){S.login={step:'setpin',who:id,mode:'pick'}}else{S.login.err=authErr(e)}const x=$('#l_pin');if(x)x.value=''}
+ finally{S.busy=false;render()}}
+async function loginSetPin(){const a=pinVal('l_pin1'),b=pinVal('l_pin2');if(!isPin(a)){S.login.err='PIN ต้องเป็นตัวเลข 4 หลัก';render();return}if(a!==b){S.login.err='PIN ทั้งสองช่องไม่ตรงกัน';render();return}
+ S.busy=true;S.login.err='';render();const id=S.login.who;
+ try{const r=await call('setPin',{uid:id,pin:a});setSession(id,r.token);S.busy=false;enter();toast('ตั้ง PIN เรียบร้อย','ใช้ PIN นี้ทุกครั้งที่เข้าสู่ระบบ',null,'check')}
+ catch(e){S.login.err=String(e?.message||e).includes('HAS_PIN')?'ชื่อนี้ตั้ง PIN ไว้แล้ว กลับไปเข้าสู่ระบบด้วย PIN':authErr(e)}
+ finally{S.busy=false;render()}}
+async function logout(){const tok=S.token;if(tok)call('logout').catch(()=>{});ls.set('uid',null);ls.set('token',null);S.uid=null;S.token=null;S.authed=false;S.sheet=null;S.profDraft=null;S.login={step:'who',mode:'pick'};stopPolling();render();toast('ออกจากระบบแล้ว','ครั้งต่อไปเข้าด้วย PIN 4 หลัก',null,'check')}
+function forceRelogin(msg){const who=S.uid;ls.set('token',null);S.token=null;S.authed=false;S.sheet=null;S.login={step:'who',mode:'pick',who,err:msg};stopPolling();render()}
+async function changePin(){const o=pinVal('c_old'),a=pinVal('c_new'),b=pinVal('c_new2');const err=m=>{const e=$('#c_err');if(e){e.textContent=m;e.style.color=m.startsWith('✓')?'var(--ok)':'var(--crit)'}};
+ if(!isPin(o)||!isPin(a))return err('PIN ต้องเป็นตัวเลข 4 หลัก');if(a!==b)return err('PIN ใหม่ทั้งสองช่องไม่ตรงกัน');
+ try{await call('changePin',{old:o,pin:a});['c_old','c_new','c_new2'].forEach(i=>{const x=$('#'+i);if(x)x.value=''});err('✓ เปลี่ยน PIN แล้ว อุปกรณ์อื่นที่ค้างระบบไว้จะต้องเข้าสู่ระบบใหม่')}
+ catch(e){const c=String(e?.message||e);err(c.includes('WRONG_OLD')?'PIN เดิมไม่ถูกต้อง':c.includes('AUTH')?'เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่':'เปลี่ยน PIN ไม่สำเร็จ')}}
+async function resetPin(){const t=$('#r_who')?.value;const out=$('#r_err');if(!t)return;if(S.resetConfirm!==t){S.resetConfirm=t;if(out){out.textContent=`กดอีกครั้งเพื่อยืนยันรีเซ็ต PIN ของ ${S.members[t]?.name||''}`;out.style.color='var(--warn)'}return}
+ S.resetConfirm=null;try{await call('resetPin',{target:t});if(out){out.textContent=`✓ รีเซ็ตแล้ว ${S.members[t]?.name||''} ตั้ง PIN ใหม่ได้ที่หน้าเข้าสู่ระบบ`;out.style.color='var(--ok)'}}catch(e){if(out){out.textContent='รีเซ็ตไม่สำเร็จ';out.style.color='var(--crit)'}}}
+
+/* ---------- boot ---------- */
+async function boot(){S.login.step='loading';render();
+ try{await liff.init({liffId:LIFF_ID});if(!liff.isLoggedIn()){liff.login({redirectUri:location.href});return}}
+ catch(e){S.login={step:'code',mode:'new',err:'เปิดผ่าน LINE ไม่สำเร็จ: '+(e?.message||e)};render();return}
+ try{const r=await call('boot');applyData(r);S.aiOn=!!r.ai;S.lineOn=!!r.line;
+  if(r.liffUid){S.liffLinked=true;setSession(r.liffUid,null);enter()}
+  else if(r.authOk&&S.members[S.uid])enter();
+  else S.login={step:'who',mode:Object.keys(S.members).length?'pick':'new',who:S.members[S.uid]?S.uid:''}}
+ catch(e){const acc=String(e?.message||e).includes('ACCESS'),had=!!S.code;if(acc){S.code='';ls.set('code','')}
+  S.login={step:'code',mode:'new',err:acc?(had?'รหัสเข้าใช้ระบบถูกเปลี่ยน กรุณาใส่รหัสใหม่':''):'เชื่อมต่อระบบไม่ได้ ลองโหลดหน้าใหม่อีกครั้ง'}}
+ render();setInterval(()=>{if(S.authed)render()},60000)}
+if(S.view==='new')S.draft=newDraft();
+boot();
+
+</script>
+</body>
+</html>
