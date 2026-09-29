@@ -1045,13 +1045,21 @@ async function hxDo(op){const x=S.hx.items.find(i=>i.id===S.hx.open);if(!x)retur
 
 /* ---------- server link (Google Apps Script) ---------- */
 /* เรียก Apps Script ผ่าน LIFF: ส่ง LINE ID token ไปยืนยันตัวตนทุกครั้ง */
-function liffReauth(){
- if(liff.isInClient()){showFatal('เซสชัน LINE หมดอายุ กรุณาปิดหน้านี้ (กด X มุมขวาบน) แล้วกดเมนูในแชต LINE อีกครั้ง');return}
- let last=0;try{last=+sessionStorage.getItem('mr.reauth')||0}catch{}
- if(Date.now()-last<60000){showFatal('เข้าสู่ระบบ LINE ไม่สำเร็จ กรุณาปิดเบราว์เซอร์แล้วเปิดใหม่');return}
- try{sessionStorage.setItem('mr.reauth',String(Date.now()))}catch{}
- try{liff.logout()}catch{}
- liff.login({redirectUri:location.href})}
+/* token หมดอายุหรือใช้ไม่ได้ → เข้าสู่ระบบ LINE ใหม่ แล้วกลับมาหน้าเดิม */
+function liffGoLogin(){const v=new URLSearchParams(location.search).get('v');try{liff.logout()}catch{}
+ if(liff.isInClient())location.replace('https://liff.line.me/'+LIFF_ID+(v?'?v='+encodeURIComponent(v):''));   // เปิด LIFF ใหม่ = ได้ token ใหม่จาก LINE
+ else liff.login({redirectUri:location.href})}
+function liffReauth(){let last=0;try{last=+sessionStorage.getItem('mr.relogin')||0}catch{}
+ try{sessionStorage.setItem('mr.relogin',String(Date.now()))}catch{}
+ if(Date.now()-last>60000){liffGoLogin();return}                  // ลองอัตโนมัติ 1 ครั้งต่อนาที
+ let el=document.getElementById('relogin');if(!el){el=document.createElement('div');el.id='relogin';document.body.appendChild(el)}  // ถ้ายังไม่ได้ ให้กดเอง
+ el.innerHTML=`<div style="position:fixed;inset:0;z-index:9999;background:rgba(15,23,32,.55);display:grid;place-items:center;padding:20px">
+  <div style="background:#fff;border-radius:16px;padding:22px;max-width:360px;width:100%;text-align:center;font-family:inherit">
+  <div style="font-size:40px">🔐</div><h2 style="margin:6px 0">เซสชัน LINE หมดอายุ</h2>
+  <p style="color:#555;margin:0 0 16px">กดปุ่มด้านล่างเพื่อเข้าสู่ระบบ LINE ใหม่ แล้วใช้งานต่อได้ทันที</p>
+  <button id="relogin_btn" style="width:100%;padding:14px;border:0;border-radius:12px;background:#06c755;color:#fff;font:inherit;font-weight:700;font-size:16px">เข้าสู่ระบบ LINE ใหม่</button>
+  ${liff.isInClient()?'<p style="color:#888;font-size:13px;margin:12px 0 0">ถ้ายังไม่ได้ ให้กด X ปิดหน้านี้ แล้วกดเมนูในแชต LINE อีกครั้ง</p>':''}</div></div>`;
+ el.querySelector('#relogin_btn').onclick=liffGoLogin}
 function liffToken(){const t=liff.getAccessToken();if(!t){liffReauth();throw new Error('NET')}return t}
 async function call(action,p={}){const req={code:S.code,uid:S.uid,token:S.token,...p,action};let res,d;
  try{res=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({liff:1,accessToken:liffToken(),req}),redirect:'follow'})}catch(e){throw new Error('NET')}
@@ -1085,7 +1093,7 @@ function renderLogin(){document.querySelector('.app').hidden=true;$('#scrim').hi
   else{const d=S.profDraft||(S.profDraft={name:'',role:'',unit:'',dept:'',ext:''});h+=profileFields(d)+pinInput('l_pin1','ตั้ง PIN 4 หลัก')+pinInput('l_pin2','ยืนยัน PIN อีกครั้ง')+`<button class="btn pri block" data-act="saveprof" ${bz}>${S.busy?'กำลังบันทึก...':'ลงทะเบียนและเข้าใช้งาน'}</button><p id="p_err" class="lerr"></p>`}}
  if(L.err)h+=`<p class="lerr">${esc(L.err)}</p>`;
  patch(el,h+'</div>')}
-function authErr(e){const c=String(e?.message||e);if(c.includes('LOCKED'))return 'ใส่ PIN ผิดหลายครั้ง ระบบล็อกชื่อนี้ไว้ 15 นาที';const w=c.match(/WRONG_PIN:(\d+)/);if(w)return `PIN ไม่ถูกต้อง ลองได้อีก ${w[1]} ครั้ง`;if(c.includes('BAD_PIN'))return 'PIN ต้องเป็นตัวเลข 4 หลัก';if(c.includes('ACCESS'))return 'รหัสเข้าใช้ระบบถูกเปลี่ยน';return 'เชื่อมต่อระบบไม่ได้ ลองใหม่อีกครั้ง'}
+function authErr(e){const c=String(e?.message||e);if(c.includes('LOCKED'))return 'ใส่ PIN ผิดหลายครั้ง ระบบล็อกชื่อนี้ไว้ 15 นาที';const w=c.match(/WRONG_PIN:(\d+)/);if(w)return `PIN ไม่ถูกต้อง ลองได้อีก ${w[1]} ครั้ง`;if(c.includes('BAD_PIN'))return 'PIN ต้องเป็นตัวเลข 4 หลัก';if(c.includes('ACCESS'))return 'รหัสเข้าใช้ระบบถูกเปลี่ยน';return 'เชื่อมต่อระบบไม่ได้ ลองใหม่อีกครั้ง ['+c.slice(0,40)+']'}
 async function loginCode(){const c=($('#l_code')?.value||'').trim();if(!c){S.login.err='กรุณาใส่รหัสเข้าใช้ระบบ';render();return}
  S.code=c;S.busy=true;S.login.err='';render();
  try{const r=await call('boot');ls.set('code',c);applyData(r);S.aiOn=!!r.ai;S.lineOn=!!r.line;if(r.authOk&&S.members[S.uid])enter();else S.login={step:'who',mode:Object.keys(S.members).length?'pick':'new'}}
@@ -1115,7 +1123,7 @@ async function resetPin(){const t=$('#r_who')?.value;const out=$('#r_err');if(!t
 
 /* ---------- boot ---------- */
 async function boot(){S.login.step='loading';render();
- try{await liff.init({liffId:LIFF_ID});if(!liff.isLoggedIn()){liff.login({redirectUri:location.href});return}
+ try{await liff.init({liffId:LIFF_ID});if(!liff.isLoggedIn()){liffReauth();return}
   const qv=new URLSearchParams(location.search).get('v');if(qv&&['home','list','new','acct','notif','depts'].includes(qv)){S.view=qv;ls.set('view',qv)}}
  catch(e){S.login={step:'code',mode:'new',err:'เปิดผ่าน LINE ไม่สำเร็จ: '+(e?.message||e)};render();return}
  try{const r=await call('boot');applyData(r);S.aiOn=!!r.ai;S.lineOn=!!r.line;
@@ -1123,7 +1131,7 @@ async function boot(){S.login.step='loading';render();
   else if(r.authOk&&S.members[S.uid])enter();
   else S.login={step:'who',mode:Object.keys(S.members).length?'pick':'new',who:S.members[S.uid]?S.uid:''}}
  catch(e){const acc=String(e?.message||e).includes('ACCESS'),had=!!S.code;if(acc){S.code='';ls.set('code','')}
-  S.login={step:'code',mode:'new',err:acc?(had?'รหัสเข้าใช้ระบบถูกเปลี่ยน กรุณาใส่รหัสใหม่':''):'เชื่อมต่อระบบไม่ได้ ลองโหลดหน้าใหม่อีกครั้ง'}}
+  S.login={step:'code',mode:'new',err:acc?(had?'รหัสเข้าใช้ระบบถูกเปลี่ยน กรุณาใส่รหัสใหม่':''):'เชื่อมต่อระบบไม่ได้ ลองโหลดหน้าใหม่อีกครั้ง ['+String(e?.message||e).slice(0,40)+']'}}
  render();setInterval(()=>{if(S.authed)render()},60000)}
 if(S.view==='new')S.draft=newDraft();
 boot();
