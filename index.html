@@ -5,9 +5,12 @@
 <meta charset="utf-8">
 <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://script.google.com">
+<link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
+<link rel="preconnect" href="https://api.line.me">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anuphan:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Anuphan:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
 <style>
 :root{
   --bg:#EEF3F4; --surface:#FFFFFF; --surface-2:#E6EDEF; --line:#D3DEE1;
@@ -461,7 +464,7 @@ const S={uid:ls.get('uid',null),token:ls.get('token',null),code:ls.get('code',''
  view:ls.get('view','home'),openId:null,action:null,sheet:null,lightbox:null,
  draft:null,filter:{q:'',st:'active',dept:'',scope:'all',urg:''},profiles:{},
  bootAt:Date.now(),toasted:new Set(),busy:false,profDraft:null,onboarded:false};
-if(!['home','list','depts','notif','new','report','acct'].includes(S.view))S.view='home';
+if(!['home','list','depts','notif','new','report'].includes(S.view))S.view='home';
 
 const me=()=>S.uid?S.members[S.uid]:null;
 const isStaff=()=>['tech','admin'].includes(me()?.role);
@@ -692,15 +695,15 @@ function profileFields(d){return `<div class="field"><label for="p_name">ชื�
  ${d.role==='tech'||d.role==='admin'?`<div class="field"><label for="p_dept">แผนกช่างที่สังกัด</label><select class="inp" id="p_dept"><option value="">เลือกแผนก</option>${d.role==='admin'?`<option value="all" ${d.dept==='all'?'selected':''}>ทุกแผนก (ศูนย์ซ่อมบำรุง)</option>`:''}${DEPTS.map(x=>`<option value="${x.id}" ${d.dept===x.id?'selected':''}>${esc(x.name)}</option>`).join('')}</select><small style="color:var(--ink-3)">คุณจะได้รับแจ้งเตือนทุกงานที่เข้าแผนกนี้</small></div>`:''}
  ${d.role?`<div class="field"><label for="p_ext">เบอร์โทรภายใน</label><input class="inp num" id="p_ext" maxlength="30" inputmode="tel" placeholder="เช่น 2231" value="${esc(d.ext||'')}"></div>`:''}`}
 /* ---------- render ---------- */
-const NAV=[['home','หน้าหลัก','home'],['list','ใบงาน','list'],['new','แจ้งซ่อม','plus'],['acct','ขอรหัส','key'],['depts','แผนกช่าง','team'],['notif','แจ้งเตือน','bell']];
+const NAV=[['home','หน้าหลัก','home'],['list','ใบงาน','list'],['new','แจ้งซ่อม','plus'],['depts','แผนกช่าง','team'],['notif','แจ้งเตือน','bell']];
 function render(){try{renderInner()}catch(e){showFatal(e)}}
 function renderInner(){if(!S.authed){renderLogin();return}document.querySelector('.app').hidden=false;$('#login').hidden=true;const un=unreadCount();document.title=(un?`(${un}) `:'')+'ศูนย์แจ้งซ่อมโรงพยาบาล';const m=me();
  const brand=`<div class="brand"><span class="mark">${I('cross')}</span><span><b>ศูนย์แจ้งซ่อม</b><small>ระบบแจ้งซ่อมภายในโรงพยาบาล</small></span></div>`;
  const bdg=n=>n?`<span class="badge">${n>99?'99+':n}</span>`:'';
  $('#side').innerHTML=`${brand}<button class="btn pri newbtn" data-act="new">${I('plus','sm')}แจ้งซ่อมใหม่</button>${[...NAV.filter(n=>n[0]!=='new'),...(isStaff()?[['report','รายงาน','chart']]:[])].map(([k,l,i])=>`<button class="navi" data-act="goto" data-go="${k}" ${S.view===k?'aria-current="page"':''}>${I(i)}${l}${k==='notif'?bdg(un):''}</button>`).join('')}
  <button class="me" data-act="profile">${S.uid?av(S.uid):`<span class="av">${I('user','sm')}</span>`}<span><b>${esc(S.uid?nm(S.uid):'ผู้เยี่ยมชม')}</b><small>${m?esc(ROLES[m.role]?.l):'ตั้งค่าโปรไฟล์'}</small></span></button>`;
- $('#tabs').innerHTML=NAV.filter(n=>n[0]!=='depts').map(([k,l,i])=>k==='new'?`<button class="tab fab" data-act="new"><span class="fabc">${I(i)}</span><em>${l}</em></button>`:`<button class="tab" data-act="goto" data-go="${k}" ${S.view===k?'aria-current="page"':''}>${I(i)}${l}${k==='notif'?bdg(un):''}</button>`).join('');
- $('#top').innerHTML=`${brand}<span class="grow"></span><button class="iconbtn" data-act="goto" data-go="depts" aria-label="แผนกช่าง">${I('team')}</button><button class="iconbtn" data-act="goto" data-go="notif" aria-label="แจ้งเตือน">${I('bell')}${bdg(un)}</button><button class="avbtn" data-act="profile" aria-label="โปรไฟล์">${S.uid?av(S.uid):`<span class="av">${I('user','sm')}</span>`}</button>`;
+ $('#tabs').innerHTML=NAV.map(([k,l,i])=>k==='new'?`<button class="tab fab" data-act="new"><span class="fabc">${I(i)}</span><em>${l}</em></button>`:`<button class="tab" data-act="goto" data-go="${k}" ${S.view===k?'aria-current="page"':''}>${I(i)}${l}${k==='notif'?bdg(un):''}</button>`).join('');
+ $('#top').innerHTML=`${brand}<span class="grow"></span><button class="iconbtn" data-act="goto" data-go="notif" aria-label="แจ้งเตือน">${I('bell')}${bdg(un)}</button><button class="avbtn" data-act="profile" aria-label="โปรไฟล์">${S.uid?av(S.uid):`<span class="av">${I('user','sm')}</span>`}</button>`;
  let body='';
  if(S.dbState==='none')body+=`<div class="banner">${I('alert')}<div>ระบบจัดเก็บข้อมูลยังไม่พร้อมในมุมมองนี้ ให้เปิดลิงก์ระบบจากบัญชีที่อยู่ในองค์กรเดียวกันเพื่อแจ้งซ่อมและรับแจ้งเตือน</div></div>`;
  else if(S.dbState==='err')body+=`<div class="banner">${I('alert')}<div>การเชื่อมต่อข้อมูลขัดข้อง โหลดหน้านี้ใหม่อีกครั้ง</div></div>`;
@@ -1046,7 +1049,7 @@ async function hxDo(op){const x=S.hx.items.find(i=>i.id===S.hx.open);if(!x)retur
 /* ---------- server link (Google Apps Script) ---------- */
 /* เรียก Apps Script ผ่าน LIFF: ส่ง LINE ID token ไปยืนยันตัวตนทุกครั้ง */
 /* token หมดอายุหรือใช้ไม่ได้ → เข้าสู่ระบบ LINE ใหม่ แล้วกลับมาหน้าเดิม */
-function liffGoLogin(){const v=new URLSearchParams(location.search).get('v');try{liff.logout()}catch{}
+function liffGoLogin(){ls.set('snap',null);const v=new URLSearchParams(location.search).get('v');try{liff.logout()}catch{}
  if(liff.isInClient())location.replace('https://liff.line.me/'+LIFF_ID+(v?'?v='+encodeURIComponent(v):''));   // เปิด LIFF ใหม่ = ได้ token ใหม่จาก LINE
  else liff.login({redirectUri:location.href})}
 function liffReauth(){let last=0;try{last=+sessionStorage.getItem('mr.relogin')||0}catch{}
@@ -1060,6 +1063,14 @@ function liffReauth(){let last=0;try{last=+sessionStorage.getItem('mr.relogin')|
   <button id="relogin_btn" style="width:100%;padding:14px;border:0;border-radius:12px;background:#06c755;color:#fff;font:inherit;font-weight:700;font-size:16px">เข้าสู่ระบบ LINE ใหม่</button>
   ${liff.isInClient()?'<p style="color:#888;font-size:13px;margin:12px 0 0">ถ้ายังไม่ได้ ให้กด X ปิดหน้านี้ แล้วกดเมนูในแชต LINE อีกครั้ง</p>':''}</div></div>`;
  el.querySelector('#relogin_btn').onclick=liffGoLogin}
+/* เก็บข้อมูลล่าสุดไว้ในเครื่อง ผูกกับบัญชี LINE ที่เปิด (ใช้ข้ามบัญชีไม่ได้) */
+function saveSnap(d){if(!S.lu||!d||!d.liffUid)return;ls.set('snap',{lu:S.lu,at:Date.now(),d:{ver:d.ver,members:d.members,tickets:d.tickets,ai:d.ai,line:d.line,liffUid:d.liffUid}})}
+async function bootFresh(){try{const r=await call('boot');
+  if(r.liffUid&&r.liffUid===S.uid){applyData(r);S.aiOn=!!r.ai;S.lineOn=!!r.line;saveSnap(r);S.dbState='ok';render()}
+  else{ls.set('snap',null);location.reload()}}
+ catch(e){const m=String(e?.message||e);if(m.includes('LIFF_AUTH'))return;
+  if(m.includes('ACCESS')||m.includes('NO_USER')){ls.set('snap',null);location.reload();return}
+  S.dbState='err';render()}}
 function liffToken(){const t=liff.getAccessToken();if(!t){liffReauth();throw new Error('NET')}return t}
 async function call(action,p={}){const req={code:S.code,uid:S.uid,token:S.token,...p,action};let res,d;
  try{res=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({liff:1,accessToken:liffToken(),req}),redirect:'follow'})}catch(e){throw new Error('NET')}
@@ -1069,7 +1080,7 @@ async function call(action,p={}){const req={code:S.code,uid:S.uid,token:S.token,
 function applyData(r){Object.values(r.members||{}).forEach(m=>{m.name=String(m.name??'');m.unit=String(m.unit??'');m.ext=String(m.ext??'')});setTimeout(lineLinkedCheck,0);const first=!S.ticketsLoaded;S.members=r.members||{};S.tickets=(r.tickets||[]).sort((a,b)=>b.createdAt-a.createdAt);S.ver=r.ver;S.ticketsLoaded=true;S.membersLoaded=true;S.dbState='ok';if(!first&&S.authed)checkNew()}
 let syncing=false,timer=null;
 async function sync(force){if(syncing||(!S.code&&!S.liffLinked))return;syncing=true;
- try{const r=await call('sync',{ver:force?0:S.ver});if(!r.same){applyData(r);if(S.uid&&!S.members[S.uid]&&S.authed){S.authed=false;S.login={step:'who',mode:'new',err:'ไม่พบชื่อของคุณในระบบแล้ว กรุณาลงทะเบียนใหม่'}}render()}else if(S.dbState!=='ok'){S.dbState='ok';render()}}
+ try{const r=await call('sync',{ver:force?0:S.ver});if(!r.same){applyData(r);if(S.liffLinked)saveSnap({...r,liffUid:S.uid,ai:S.aiOn,line:S.lineOn});if(S.uid&&!S.members[S.uid]&&S.authed){S.authed=false;S.login={step:'who',mode:'new',err:'ไม่พบชื่อของคุณในระบบแล้ว กรุณาลงทะเบียนใหม่'}}render()}else if(S.dbState!=='ok'){S.dbState='ok';render()}}
  catch(e){if(String(e?.message||e).includes('ACCESS')){S.authed=false;S.code='';ls.set('code','');S.login={step:'code',mode:'new',err:'รหัสเข้าใช้ระบบถูกเปลี่ยน กรุณาใส่รหัสใหม่'};stopPolling()}else S.dbState='err';render()}
  finally{syncing=false}}
 function startPolling(){stopPolling();timer=setInterval(()=>{if(document.visibilityState==='visible')sync()},20000)}
@@ -1112,7 +1123,7 @@ async function loginSetPin(){const a=pinVal('l_pin1'),b=pinVal('l_pin2');if(!isP
  try{const r=await call('setPin',{uid:id,pin:a});setSession(id,r.token);S.busy=false;enter();toast('ตั้ง PIN เรียบร้อย','ใช้ PIN นี้ทุกครั้งที่เข้าสู่ระบบ',null,'check')}
  catch(e){S.login.err=String(e?.message||e).includes('HAS_PIN')?'ชื่อนี้ตั้ง PIN ไว้แล้ว กลับไปเข้าสู่ระบบด้วย PIN':authErr(e)}
  finally{S.busy=false;render()}}
-async function logout(){const tok=S.token;if(tok)call('logout').catch(()=>{});ls.set('uid',null);ls.set('token',null);S.uid=null;S.token=null;S.authed=false;S.sheet=null;S.profDraft=null;S.login={step:'who',mode:'pick'};stopPolling();render();toast('ออกจากระบบแล้ว','ครั้งต่อไปเข้าด้วย PIN 4 หลัก',null,'check')}
+async function logout(){ls.set('snap',null);const tok=S.token;if(tok)call('logout').catch(()=>{});ls.set('uid',null);ls.set('token',null);S.uid=null;S.token=null;S.authed=false;S.sheet=null;S.profDraft=null;S.login={step:'who',mode:'pick'};stopPolling();render();toast('ออกจากระบบแล้ว','ครั้งต่อไปเข้าด้วย PIN 4 หลัก',null,'check')}
 function forceRelogin(msg){const who=S.uid;ls.set('token',null);S.token=null;S.authed=false;S.sheet=null;S.login={step:'who',mode:'pick',who,err:msg};stopPolling();render()}
 async function changePin(){const o=pinVal('c_old'),a=pinVal('c_new'),b=pinVal('c_new2');const err=m=>{const e=$('#c_err');if(e){e.textContent=m;e.style.color=m.startsWith('✓')?'var(--ok)':'var(--crit)'}};
  if(!isPin(o)||!isPin(a))return err('PIN ต้องเป็นตัวเลข 4 หลัก');if(a!==b)return err('PIN ใหม่ทั้งสองช่องไม่ตรงกัน');
@@ -1124,10 +1135,12 @@ async function resetPin(){const t=$('#r_who')?.value;const out=$('#r_err');if(!t
 /* ---------- boot ---------- */
 async function boot(){S.login.step='loading';render();
  try{await liff.init({liffId:LIFF_ID});if(!liff.isLoggedIn()){liffReauth();return}
-  const qv=new URLSearchParams(location.search).get('v');if(qv&&['home','list','new','acct','notif','depts'].includes(qv)){S.view=qv;ls.set('view',qv)}}
+  S.lu=(liff.getContext&&liff.getContext()||{}).userId||'';const snap=S.lu&&ls.get('snap',null);
+  if(snap&&snap.lu===S.lu&&snap.d&&snap.d.liffUid){applyData(snap.d);S.aiOn=!!snap.d.ai;S.lineOn=!!snap.d.line;S.liffLinked=true;setSession(snap.d.liffUid,null);enter();render();setInterval(()=>{if(S.authed)render()},60000);bootFresh();return}
+  const qv=new URLSearchParams(location.search).get('v');if(qv&&['home','list','new','notif','depts'].includes(qv)){S.view=qv;ls.set('view',qv)}}
  catch(e){S.login={step:'code',mode:'new',err:'เปิดผ่าน LINE ไม่สำเร็จ: '+(e?.message||e)};render();return}
  try{const r=await call('boot');applyData(r);S.aiOn=!!r.ai;S.lineOn=!!r.line;
-  if(r.liffUid){S.liffLinked=true;setSession(r.liffUid,null);enter()}
+  if(r.liffUid){S.liffLinked=true;setSession(r.liffUid,null);saveSnap(r);enter()}
   else if(r.authOk&&S.members[S.uid])enter();
   else S.login={step:'who',mode:Object.keys(S.members).length?'pick':'new',who:S.members[S.uid]?S.uid:''}}
  catch(e){const acc=String(e?.message||e).includes('ACCESS'),had=!!S.code;if(acc){S.code='';ls.set('code','')}
