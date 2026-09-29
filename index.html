@@ -386,6 +386,7 @@ img{max-width:100%}
 /* ================== ตั้งค่า LIFF (แก้ 2 บรรทัดนี้) ================== */
 const LIFF_ID = '2011772311-Ptw8b18f';                                         // เช่น 2011766740-AbCdEfGh
 const API_URL = 'https://script.google.com/macros/s/AKfycbwsFrGPo-9hZIvaSKnukqOIQZ3uQgvkdhPW5Bq6lfi1BPyRFoVF_XqP1WcxNbsCjIAudg/exec';   // Deploy → Web app URL
+try{fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:'{"ping":1}',redirect:'follow'}).catch(()=>{})}catch(e){}   // ปลุกระบบล่วงหน้า
 /* ==================================================================== */
 /* ---------- error screen: never leave a blank page ---------- */
 function showFatal(e){try{console.error(e);const msg=String(e&&(e.stack||e.message)||e).slice(0,600);let el=document.getElementById('fatal');if(!el){el=document.createElement('div');el.id='fatal';document.body.appendChild(el)}
@@ -1111,7 +1112,7 @@ async function loginCode(){const c=($('#l_code')?.value||'').trim();if(!c){S.log
  catch(e){S.code='';S.login.err=String(e?.message||e).includes('ACCESS')?'รหัสไม่ถูกต้อง ตรวจสอบกับหัวหน้างานอีกครั้ง':'เชื่อมต่อระบบไม่ได้ ลองใหม่อีกครั้ง'}
  finally{S.busy=false;render()}}
 function setSession(uid,token){S.uid=uid;S.token=token;ls.set('uid',uid);ls.set('token',token)}
-function enter(){S.authed=true;if(!S.lastSeen){S.lastSeen=Date.now();S.seenBase=S.lastSeen;ls.set('lastSeen',S.lastSeen)}S.login={step:'code',mode:'new'};S.profDraft=null;S.bootAt=Date.now();startPolling()}
+function enter(){S.authed=true;if(S.lu&&S.uid&&S.ticketsLoaded){S.liffLinked=true;saveSnap({ver:S.ver,members:S.members,tickets:S.tickets,ai:S.aiOn,line:S.lineOn,liffUid:S.uid})}if(!S.lastSeen){S.lastSeen=Date.now();S.seenBase=S.lastSeen;ls.set('lastSeen',S.lastSeen)}S.login={step:'code',mode:'new'};S.profDraft=null;S.bootAt=Date.now();startPolling()}
 async function loginPick(){const id=$('#l_who')?.value;const pin=pinVal('l_pin');S.login.who=id;
  if(!id){S.login.err='กรุณาเลือกชื่อของคุณ';render();return}if(!isPin(pin)){S.login.err='กรุณาใส่ PIN ตัวเลข 4 หลัก';render();return}
  S.busy=true;S.login.err='';render();
